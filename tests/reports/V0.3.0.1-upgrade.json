@@ -1,0 +1,13 @@
+{
+  "oldCaches": [
+    "jojo-brain-v0.3.0"
+  ],
+  "newCaches": [
+    "jojo-brain-v0.3.0.1"
+  ],
+  "versionedRequests": 14,
+  "version": "V0.3.0.1",
+  "nodes": 4,
+  "bootHidden": true,
+  "errors": []
+}

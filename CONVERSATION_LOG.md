@@ -1,4 +1,28 @@
-# Conversation & Decision Log — JoJo Brain
+# 20 november 2026 — V0.3.0.1 Samsung/PWA Bootstrap Hotfix
+
+### Aanleiding
+
+Een echte Samsung/PWA-screenshot toonde V0.3.0, maar geen graph. `NEURAL UNIVERSE INITIALISEREN` bleef staan en statische shellcontrols waren los zichtbaar.
+
+### Diagnose
+
+- bootstrap kon vóór `render()` afbreken door de harde `ResizeObserver`-dependency;
+- de onversioned cache-first assets maakten een gemengde oude/nieuwe app-shell mogelijk bij een update van een reeds geïnstalleerde PWA;
+- de vaste minimumhoogte week af van de Samsung visual viewport.
+
+### Beslissingen
+
+- geen herontwerp: V0.3 Living Neural Universe blijft de baseline;
+- compatibility fallbacks in de engine;
+- visual-viewportmeting vóór CSS en tijdens runtime;
+- release-versioned assets en atomische service-workerupdate;
+- statische fallbackcontrols blijven verborgen tot `app-ready`;
+- de bestaande PWA moet zichzelf bijwerken zonder herinstallatie;
+- hotfixdocumentatie en upgrade-regressietest worden onderdeel van de release.
+
+---
+
+## Eerdere beslissingen
 
 ## 20 november 2026 — V0.3.0 Living Neural Universe
 

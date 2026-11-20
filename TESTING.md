@@ -1,4 +1,4 @@
-# Testing — JoJo Brain V0.3.0
+# Testing — JoJo Brain V0.3.0.1
 
 De uitgevoerde buildresultaten staan in `TEST_REPORT-V0.3.0.md`.
 
@@ -90,3 +90,18 @@ Minimaal testen:
 ## 6. Securityregressie
 
 Zoek vóór publicatie naar tokens, wachtwoorden, private keys, lokale hostnamen, TCX/FIT/GPX-data en `.env`-bestanden.
+
+## V0.3.0.1 hotfixregressies
+
+Aanvullend verplicht:
+
+- start met `ResizeObserver` verwijderd: rootgraph moet renderen;
+- start met `CSS.escape` verwijderd: animation loop en drag blijven werken;
+- simuleer een bestaande V0.3-cache en publiceer daarna V0.3.0.1: de bestaande client moet zonder reinstall versioned assets laden;
+- controleer dat `is-booting` verdwijnt en `app-ready` verschijnt;
+- `NEURAL UNIVERSE INITIALISEREN` mag na bootstrap niet zichtbaar zijn;
+- ROOT/LIVE/X-placeholders mogen vóór of na bootstrap niet los zichtbaar zijn;
+- wijzig een Samsung-achtige visual viewport en controleer dat `--app-height`, universe, graph en canvas volgen;
+- JoJo, Sport & Health, Home en Development moeten zichtbaar zijn;
+- lijnen, drag en fysieke connected-node response blijven actief;
+- offline reload na de update moet slagen.

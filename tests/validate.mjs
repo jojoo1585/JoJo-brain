@@ -12,13 +12,13 @@ const required = [
   'index.html','styles.css','config.js','graph-data.js','neural-engine.js','app.js',
   'manifest.webmanifest','service-worker.js','offline.html','VERSION','README.md','SECURITY.md','PUBLISHING.md',
   'ARCHITECTURE.md','ENGINE.md','ROADMAP.md','TESTING.md','TEST_REPORT-V0.3.0.md','VERSION_HISTORY.md','CONVERSATION_LOG.md',
-  'CHANGELOG.md','CHANGELOG-V0.3.0.md','assets/icons/favicon.svg','assets/icons/icon-192.png',
+  'CHANGELOG.md','CHANGELOG-V0.3.0.md','CHANGELOG-V0.3.0.1.md','TEST_REPORT-V0.3.0.1.md','assets/icons/favicon.svg','assets/icons/icon-192.png',
   'assets/icons/icon-512.png','assets/icons/maskable-192.png','assets/icons/maskable-512.png','assets/icons/apple-touch-icon.png'
 ];
 required.forEach((file) => assert(exists(file), `Ontbrekend bestand: ${file}`));
 
 const version = read('VERSION').trim();
-assert(version === '0.3.0', 'VERSION moet 0.3.0 zijn');
+assert(version === '0.3.0.1', 'VERSION moet 0.3.0.1 zijn');
 const pkg = JSON.parse(read('package.json'));
 assert(pkg.version === version, 'package.json-versie wijkt af');
 
@@ -27,7 +27,10 @@ assert(html.includes('lang="nl"'), 'HTML-taal ontbreekt');
 assert(html.includes('viewport-fit=cover'), 'Safe-area viewport ontbreekt');
 ['space-canvas','graph-viewport','node-layer','info-drawer'].forEach((id) => assert(html.includes(`id="${id}"`), `App-shell mist ${id}`));
 assert(html.includes('class="mobile-dock"'), 'Mobiele dock ontbreekt');
-['config.js','graph-data.js','neural-engine.js','app.js'].forEach((asset) => assert(html.includes(`src="${asset}"`), `Script ontbreekt in index: ${asset}`));
+['config.js','graph-data.js','neural-engine.js','app.js'].forEach((asset) => assert(html.includes(`src="${asset}?v=${version}"`), `Versioned script ontbreekt in index: ${asset}`));
+assert(html.includes('styles.css?v=0.3.0.1'), 'Versioned stylesheet ontbreekt');
+assert(html.includes('__JOJO_SYNC_VIEWPORT__'), 'Visual-viewportbootstrap ontbreekt');
+assert(html.includes('class="info-drawer is-collapsed"'), 'Drawer moet statisch verborgen starten');
 const ids = (html.match(/id="[^"]+"/g) || []).map((item) => item.slice(4,-1));
 assert(ids.length === new Set(ids).size, 'Dubbele HTML-id gevonden');
 
@@ -35,7 +38,8 @@ const manifest = JSON.parse(read('manifest.webmanifest'));
 assert(manifest.display === 'standalone', 'PWA display moet standalone zijn');
 assert(manifest.start_url === './' && manifest.scope === './', 'Relatieve start_url/scope verwacht');
 assert(manifest.name.includes('Living Neural Universe'), 'V0.3 manifestnaam ontbreekt');
-manifest.icons.forEach((icon) => assert(exists(icon.src), `Manifesticoon ontbreekt: ${icon.src}`));
+manifest.icons.forEach((icon) => assert(exists(icon.src.split('?')[0]), `Manifesticoon ontbreekt: ${icon.src}`));
+assert(manifest.icons.every((icon) => icon.src.includes('?v=0.3.0.1')), 'Manifesticonen moeten release-versioned zijn');
 assert(manifest.icons.some((icon) => icon.sizes === '512x512' && icon.purpose === 'maskable'), '512 maskable icon ontbreekt');
 assert(manifest.shortcuts.length === 3, 'Drie PWA shortcuts verwacht');
 
@@ -63,16 +67,20 @@ assert(engine.includes('this.mobile ? 32 : 62'), 'Adaptief particle-budget ontbr
 assert(engine.includes('1.25 : 1.6'), 'DPR-cap ontbreekt');
 
 const sw = read('service-worker.js');
-assert(sw.includes('jojo-brain-v0.3.0'), 'Service-workercacheversie klopt niet');
+assert(sw.includes("const RELEASE = '0.3.0.1'"), 'Service-workercacheversie klopt niet');
 ['graph-data.js','neural-engine.js','app.js','styles.css','offline.html'].forEach((asset) => assert(sw.includes(`./${asset}`), `App-shell mist ${asset}`));
+assert(sw.includes("cache: 'no-store'"), 'Navigatie moet HTTP-cache omzeilen');
+assert(sw.includes("url.searchParams.get('v') === RELEASE"), 'Versioned assetcache ontbreekt');
+assert(engine.includes("typeof window.ResizeObserver === 'function'"), 'ResizeObserver compatibility fallback ontbreekt');
+assert(!engine.includes('CSS.escape('), 'CSS.escape runtime dependency mag niet terugkeren');
 
 const allText = required.filter((file) => exists(file) && !file.endsWith('.png')).map(read).join('\n');
 assert(!/(password|api[_ -]?key|secret|token)\s*[:=]\s*['"][^'"]{3,}/i.test(allText), 'Mogelijk geheim gevonden');
 assert(!/https?:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/i.test(allText), 'Privé-IP-adres gevonden');
 
 const architecture = read('ARCHITECTURE.md');
-assert(architecture.includes('V0.3.0') && architecture.includes('hybride spatial graph'), 'Architectuurdocument niet bijgewerkt voor V0.3');
-['ROADMAP.md','TESTING.md','VERSION_HISTORY.md','CONVERSATION_LOG.md','CHANGELOG-V0.3.0.md'].forEach((file) => assert(read(file).includes('V0.3.0'), `${file} mist V0.3.0`));
+assert(architecture.includes('V0.3.0.1') && architecture.includes('hybride spatial graph'), 'Architectuurdocument niet bijgewerkt voor V0.3');
+['ROADMAP.md','TESTING.md','VERSION_HISTORY.md','CONVERSATION_LOG.md','CHANGELOG-V0.3.0.1.md','TEST_REPORT-V0.3.0.1.md'].forEach((file) => assert(read(file).includes('V0.3.0.1'), `${file} mist V0.3.0.1`));
 
 if (errors.length) {
   console.error(`Validatie mislukt (${errors.length}):`);

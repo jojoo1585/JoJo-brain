@@ -1,0 +1,23 @@
+{
+  "desktop": {
+    "rootNodes": 4,
+    "sportNodes": 6,
+    "offlineNodes": 6,
+    "serviceWorker": true,
+    "errors": []
+  },
+  "samsung": {
+    "rootNodes": 4,
+    "sportNodes": 6,
+    "offlineNodes": 6,
+    "serviceWorker": true,
+    "errors": []
+  },
+  "landscape": {
+    "rootNodes": 4,
+    "sportNodes": 6,
+    "offlineNodes": 6,
+    "serviceWorker": true,
+    "errors": []
+  }
+}

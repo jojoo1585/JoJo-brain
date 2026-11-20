@@ -1,0 +1,15 @@
+{
+  "resizeObserverPresent": false,
+  "cssEscapePresent": false,
+  "nodeIds": [
+    "jojo",
+    "sport-health",
+    "home",
+    "development"
+  ],
+  "canvasSamples": 6908,
+  "dragReactionPx": 2.11,
+  "initialHeight": 915,
+  "resizedHeight": 790,
+  "errors": []
+}

@@ -12,12 +12,14 @@
     constructor({ viewport, canvas, layer, data, onActivate, onSelect }) {
       this.viewport = viewport;
       this.canvas = canvas;
-      this.ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      this.ctx = canvas.getContext('2d', { alpha: true, desynchronized: true }) || canvas.getContext('2d');
+      if (!this.ctx) throw new Error('Canvas 2D context is niet beschikbaar');
       this.layer = layer;
       this.data = data;
       this.onActivate = onActivate;
       this.onSelect = onSelect;
       this.nodes = new Map();
+      this.nodeElements = new Map();
       this.edges = [];
       this.particles = [];
       this.currentId = 'jojo';
@@ -30,8 +32,17 @@
       this.dpr = Math.min(devicePixelRatio || 1, this.mobile ? 1.25 : 1.6);
       this.drag = null;
       this.focusPulse = 0;
-      this.resizeObserver = new ResizeObserver(() => this.resize());
-      this.resizeObserver.observe(viewport);
+      this.handleResize = () => this.resize();
+      if (typeof window.ResizeObserver === 'function') {
+        this.resizeObserver = new window.ResizeObserver(this.handleResize);
+        this.resizeObserver.observe(viewport);
+      } else {
+        /* Samsung Internet/WebView fallback: ResizeObserver is not universal. */
+        this.resizeObserver = null;
+        window.addEventListener('resize', this.handleResize, { passive: true });
+        window.addEventListener('orientationchange', this.handleResize, { passive: true });
+        if (window.visualViewport) window.visualViewport.addEventListener('resize', this.handleResize, { passive: true });
+      }
       this.resize();
       document.addEventListener('visibilitychange', () => { this.running = !document.hidden; if (this.running) requestAnimationFrame((t) => this.frame(t)); });
       requestAnimationFrame((t) => this.frame(t));
@@ -39,8 +50,9 @@
 
     resize() {
       const rect = this.viewport.getBoundingClientRect();
-      this.width = Math.max(320, rect.width);
-      this.height = Math.max(420, rect.height);
+      const visualHeight = window.visualViewport && window.visualViewport.height ? window.visualViewport.height : window.innerHeight;
+      this.width = Math.max(280, rect.width || window.innerWidth || 320);
+      this.height = Math.max(280, Math.min(rect.height || visualHeight || 480, visualHeight || rect.height || 480));
       this.mobile = this.width <= 760;
       this.lowPower = this.mobile || this.reduced;
       this.dpr = Math.min(devicePixelRatio || 1, this.mobile ? 1.25 : 1.6);
@@ -163,8 +175,10 @@
         </button>`;
       }).join('');
 
+      this.nodeElements.clear();
       this.layer.querySelectorAll('.neural-node').forEach((element) => {
         const id = element.dataset.nodeId;
+        this.nodeElements.set(id, element);
         let startX = 0, startY = 0, moved = false;
         element.addEventListener('pointerdown', (event) => {
           if (event.button !== 0) return;
@@ -302,7 +316,7 @@
 
     updateDom() {
       this.nodes.forEach((node) => {
-        const el = this.layer.querySelector(`[data-node-id="${CSS.escape(node.id)}"]`);
+        const el = this.nodeElements.get(node.id);
         if (!el) return;
         el.style.transform = `translate3d(${node.x}px,${node.y}px,0) translate(-50%,-50%)`;
       });

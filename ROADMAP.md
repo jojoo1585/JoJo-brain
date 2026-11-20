@@ -1,6 +1,6 @@
 # Roadmap — JoJo Brain
 
-## Actuele baseline: V0.3.0
+## Actuele baseline: V0.3.0.1
 
 Living Neural Universe met springfysica, sleepbare nodes, neurale canvasachtergrond, clusterfocus en volledig uitgewerkte Sport & Health-cluster.
 
@@ -26,3 +26,12 @@ Mogelijke richting, nog niet goedgekeurd:
 - bewust gekozen integraties met duidelijke privacygrens;
 - richer Home-cluster nadat concrete gebruiksscenario's bestaan;
 - nooit secrets of private netwerkadressen in de publieke repository.
+
+## V0.3.0.1 — Hotfix completed
+
+- Samsung/WebView bootstrapcompatibiliteit;
+- geïnstalleerde-PWA-upgrade zonder reinstall;
+- visual viewport en orientation changes;
+- mixed-cache upgrade regression test.
+
+De volgende stap blijft een echte hardwarecontrole; nieuwe features wachten tot deze hotfix visueel is bevestigd.

@@ -1,4 +1,12 @@
-# Changelog — JoJo Brain
+# V0.3.0.1 — Samsung/PWA Bootstrap Hotfix
+
+Zie `CHANGELOG-V0.3.0.1.md`.
+
+Herstelt de neural-enginebootstrap, Samsung standalone viewport en atomische update van een reeds geïnstalleerde PWA. V0.3 design en physics blijven behouden.
+
+---
+
+## Eerdere changelogs
 
 ## V0.3.0 — Living Neural Universe
 

@@ -7,7 +7,7 @@
  * - Publieke webadressen mogen wel worden ingevuld.
  */
 window.JOJO_CONFIG = Object.freeze({
-  version: '0.3.0',
+  version: '0.3.0.1',
   links: Object.freeze({
     garmin: 'https://connect.garmin.com/',
     strava: 'https://www.strava.com/dashboard',

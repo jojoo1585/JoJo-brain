@@ -1,4 +1,4 @@
-# Neural Engine — V0.3.0
+# Neural Engine — V0.3.0.1
 
 ## Verantwoordelijkheid
 
@@ -46,3 +46,13 @@ Slepen zet de node tijdelijk vast. Omdat de springberekening blijft lopen, reage
 - geen 3D/WebGL;
 - geen externe physicsdependency;
 - geen integratiedata of accountstatus.
+
+## V0.3.0.1 compatibility boundary
+
+De physicsformules zijn niet gewijzigd. De hotfix maakt alleen de runtime-initialisatie tolerant:
+
+- `ResizeObserver` is optioneel;
+- `visualViewport` wordt gebruikt indien beschikbaar;
+- canvascontext valt terug op een standaard 2D-context;
+- node-elementen worden rechtstreeks in een `Map` bewaard;
+- graphhoogte volgt de echte standalone viewport zonder kunstmatige minimumhoogte.

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="nl">
+<html lang="nl" class="is-booting">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
@@ -9,10 +9,40 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="JoJo">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Runs before CSS: Samsung installed PWAs need the visual viewport, not 100vh. */
+    (function () {
+      var root = document.documentElement;
+      function syncViewport() {
+        var viewport = window.visualViewport;
+        var height = viewport && viewport.height ? viewport.height : window.innerHeight;
+        var width = viewport && viewport.width ? viewport.width : window.innerWidth;
+        if (height > 0) root.style.setProperty('--app-height', Math.round(height) + 'px');
+        if (width > 0) root.style.setProperty('--app-width', Math.round(width) + 'px');
+      }
+      window.__JOJO_SYNC_VIEWPORT__ = syncViewport;
+      syncViewport();
+      window.addEventListener('resize', syncViewport, { passive: true });
+      window.addEventListener('orientationchange', function () { setTimeout(syncViewport, 80); }, { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', syncViewport, { passive: true });
+        window.visualViewport.addEventListener('scroll', syncViewport, { passive: true });
+      }
+      /* A failed or mixed-cache bootstrap may never leave static fallback chrome visible. */
+      window.__JOJO_BOOT_GUARD__ = setTimeout(function () {
+        var boot = document.getElementById('boot-screen');
+        if (boot && !root.classList.contains('app-ready')) {
+          var status = boot.querySelector('p');
+          if (status) status.textContent = 'UPDATE TOEPASSEN…';
+          if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then(function (r) { if (r) r.update(); });
+        }
+      }, 3500);
+    })();
+  </script>
+  <link rel="manifest" href="manifest.webmanifest?v=0.3.0.1">
+  <link rel="icon" href="assets/icons/favicon.svg?v=0.3.0.1" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=0.3.0.1">
+  <link rel="stylesheet" href="styles.css?v=0.3.0.1">
   <title>JoJo · Living Neural Universe</title>
 </head>
 <body>
@@ -35,15 +65,12 @@
         <span class="fps-mode" id="motion-mode">LIVE</span>
         <span class="connection" id="connection-status" role="status"><i></i><span>ONLINE</span></span>
         <button class="install-button" id="install-button" type="button" hidden>↓ Installeer</button>
-        <span class="version">V0.3.0</span>
+        <span class="version">V0.3.0.1</span>
       </div>
     </header>
 
     <section class="graph-viewport" id="graph-viewport" aria-label="Interactieve neurale kaart">
-      <div class="cluster-title" id="cluster-title" aria-live="polite">
-        <small>JOJO UNIVERSE</small>
-        <strong>Alles verbonden.</strong>
-      </div>
+      <div class="cluster-title" id="cluster-title" aria-live="polite"><small>JOJO UNIVERSE</small><strong>Alles verbonden.</strong></div>
       <div class="node-layer" id="node-layer"></div>
       <div class="gesture-help" id="gesture-help"><span>↔</span> Sleep nodes · tik om te focussen</div>
       <div class="depth-indicator" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -51,15 +78,9 @@
 
     <aside class="info-drawer is-collapsed" id="info-drawer" aria-labelledby="detail-title">
       <button class="drawer-handle" type="button" data-action="toggle-drawer" aria-label="Infopaneel in- of uitklappen"><span></span></button>
-      <div class="drawer-heading">
-        <div>
-          <span class="domain-chip" id="detail-domain">ROOT</span>
-          <span class="status-chip" id="detail-status">LIVE</span>
-        </div>
-        <button class="drawer-close" type="button" data-action="close-drawer" aria-label="Infopaneel sluiten">×</button>
-      </div>
-      <p class="detail-eyebrow" id="detail-eyebrow">PERSONAL CONTROL CENTER</p>
-      <h1 id="detail-title">JoJo</h1>
+      <div class="drawer-heading"><div><span class="domain-chip" id="detail-domain"></span><span class="status-chip" id="detail-status"></span></div><button class="drawer-close" type="button" data-action="close-drawer" aria-label="Infopaneel sluiten">×</button></div>
+      <p class="detail-eyebrow" id="detail-eyebrow"></p>
+      <h1 id="detail-title"></h1>
       <p class="detail-description" id="detail-description"></p>
       <div class="detail-flow" id="detail-flow"></div>
       <ul class="detail-points" id="detail-points"></ul>
@@ -81,9 +102,9 @@
     </div>
   </main>
   <noscript><p class="noscript">JoJo heeft JavaScript nodig voor de interactieve neurale kaart.</p></noscript>
-  <script src="config.js"></script>
-  <script src="graph-data.js"></script>
-  <script src="neural-engine.js"></script>
-  <script src="app.js"></script>
+  <script defer src="config.js?v=0.3.0.1"></script>
+  <script defer src="graph-data.js?v=0.3.0.1"></script>
+  <script defer src="neural-engine.js?v=0.3.0.1"></script>
+  <script defer src="app.js?v=0.3.0.1"></script>
 </body>
 </html>

@@ -1,4 +1,13 @@
-# Version History — JoJo Brain
+# V0.3.0.1 — Samsung/PWA Bootstrap Hotfix
+
+**Datum:** 20 november 2026  
+**Status:** hotfix build, getest voor bestaande-PWA-upgrade.
+
+Herstelt graphinitialisatie op Samsung installed PWA's door de verplichte `ResizeObserver`-dependency te verwijderen, de werkelijke visual viewport te gebruiken en gemengde service-workercaches te voorkomen met release-versioned assets. De V0.3 graph en physics blijven functioneel ongewijzigd.
+
+---
+
+## Eerdere versies
 
 ## V0.3.0 — Living Neural Universe
 

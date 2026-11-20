@@ -1,6 +1,6 @@
-# JoJo Brain V0.3.0 — Living Neural Universe
+# JoJo Brain V0.3.0.1 — Living Neural Universe Hotfix
 
-JoJo Brain is een mobile-first persoonlijke navigatie-PWA. V0.3.0 maakt van de vaste V0.2-kaart een levend ruimtelijk universum waarin JoJo het centrale anker blijft en domeinen als fysiek verbonden clusters reageren.
+JoJo Brain is een mobile-first persoonlijke navigatie-PWA. V0.3.0 veranderde de vaste V0.2-kaart een levend ruimtelijk universum waarin JoJo het centrale anker blijft en domeinen als fysiek verbonden clusters reageren.
 
 ## Hoofdstructuur
 
@@ -59,3 +59,8 @@ Alle configureerbare URL's staan in `config.js`. Publieke links mogen worden ing
 - `VERSION_HISTORY.md` — versie-overzicht;
 - `CONVERSATION_LOG.md` — beslissingen per build;
 - `CHANGELOG.md` en `CHANGELOG-V0.3.0.md` — concrete wijzigingen.
+
+
+## V0.3.0.1 hotfix
+
+Herstelt Samsung installed-PWA-initialisatie, gebruikt de werkelijke visual viewport en voorkomt gemengde oude/nieuwe cached assets. Een bestaande installatie werkt zichzelf bij; opnieuw installeren is niet vereist. Zie `CHANGELOG-V0.3.0.1.md`.

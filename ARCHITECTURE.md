@@ -1,6 +1,6 @@
-# Architecture — JoJo Brain V0.3.0
+# Architecture — JoJo Brain V0.3.0.1
 
-**Status:** actuele architectuurbaseline  
+**Status:** actuele hotfix-architectuurbaseline  
 **Laatst bijgewerkt:** 20 november 2026  
 **Architectuurwijziging:** vaste radiale DOM-layout vervangen door een hybride spatial graph.
 
@@ -130,3 +130,25 @@ JoJo Brain is geen proxy, database of authenticatielaag. De publieke build bevat
 2. Koppel een configureerbare URL uitsluitend via een `linkKey` in `config.js`.
 3. Werk `ARCHITECTURE.md` bij wanneer runtimecomponenten, datastromen of grenzen wijzigen.
 4. Werk voor iedere build changelog, versiehistoriek, testplan en conversation log bij.
+
+## 8. V0.3.0.1 bootstrap- en updatearchitectuur
+
+### Compatibility bootstrap
+
+`index.html` meet vóór het laden van CSS de `visualViewport` en schrijft `--app-height` en `--app-width`. De shell blijft `is-booting` totdat graphdata, engine, eerste render en twee animation frames voltooid zijn. Statische navigation/drawer-elementen zijn tijdens die fase verborgen.
+
+`NeuralUniverse` gebruikt `ResizeObserver` wanneer beschikbaar. Anders worden `window.resize`, `orientationchange` en `visualViewport.resize` gebruikt. De animation loop bewaart directe DOM-referenties en is daardoor niet meer afhankelijk van `CSS.escape`.
+
+### Atomic installed-PWA update
+
+Alle kritieke assets hebben een `?v=0.3.0.1` URL. Daardoor kan een oudere service worker geen gelijknamige V0.2/V0.3-cachehit teruggeven aan de nieuwe HTML-shell.
+
+De V0.3.0.1 service worker:
+
+1. installeert een volledige release-versioned app-shell;
+2. activeert onmiddellijk;
+3. verwijdert alleen oudere `jojo-brain-*` caches;
+4. claimt bestaande PWA-clients;
+5. laat de app maximaal eenmaal herladen na `controllerchange`.
+
+Hierdoor is geen verwijdering of herinstallatie van de bestaande PWA nodig.

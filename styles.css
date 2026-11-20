@@ -9,14 +9,16 @@
   font-synthesis: none; background: var(--bg); color: var(--text); text-rendering: optimizeLegibility;
 }
 * { box-sizing: border-box; }
-html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--bg); }
+html, body { width: 100%; height: 100%; height: 100dvh; margin: 0; overflow: hidden; overscroll-behavior: none; background: var(--bg); }
+html { width: var(--app-width, 100%); height: var(--app-height, 100dvh); }
+body { position: fixed; inset: 0; width: var(--app-width, 100%); height: var(--app-height, 100dvh); }
 button, a { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
 button:disabled { opacity: .28; cursor: default; }
 .skip-link { position: fixed; z-index: 999; left: 1rem; top: -5rem; padding: .75rem 1rem; border-radius: 10px; color: #04100e; background: var(--cyan); font-weight: 900; text-decoration: none; }
 .skip-link:focus { top: 1rem; }
 
-.universe { position: relative; width: 100%; height: 100svh; min-height: 520px; overflow: hidden; isolation: isolate; background:
+.universe { position: relative; width: var(--app-width, 100%); height: var(--app-height, 100dvh); min-height: 0; overflow: hidden; isolation: isolate; background:
   radial-gradient(circle at 20% 18%, rgba(53,234,210,.035), transparent 28%),
   radial-gradient(circle at 78% 72%, rgba(255,47,157,.035), transparent 34%), #05070d; }
 #space-canvas { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
@@ -117,6 +119,20 @@ button:disabled { opacity: .28; cursor: default; }
 .privacy-note { margin: .9rem 0 0; color: var(--quiet); font-size: .57rem; line-height: 1.55; }
 .mobile-dock { display: none; }
 
+/* Static shell controls are never exposed while JavaScript is still booting. */
+.is-booting .topbar,
+.is-booting .cluster-title,
+.is-booting .node-layer,
+.is-booting .gesture-help,
+.is-booting .depth-indicator,
+.is-booting .info-drawer,
+.is-booting .mobile-dock { visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+.app-ready .topbar,
+.app-ready .cluster-title,
+.app-ready .node-layer,
+.app-ready .gesture-help,
+.app-ready .depth-indicator { visibility: visible; }
+
 .boot-screen { position: fixed; z-index: 200; inset: 0; display: grid; place-content: center; justify-items: center; gap: 1.4rem; background: #05070d; transition: opacity .55s ease, visibility .55s ease; }
 .boot-screen.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 .boot-orbit { position: relative; width: 86px; height: 86px; display: grid; place-items: center; border: 1px solid var(--cyan); border-radius: 50%; color: var(--cyan); box-shadow: 0 0 48px rgba(var(--cyan-rgb),.14); }
@@ -138,7 +154,7 @@ button:disabled { opacity: .28; cursor: default; }
 }
 
 @media (max-width: 760px) {
-  .universe { min-height: 480px; }
+  .universe { min-height: 0; }
   .nebula { width: 75vw; height: 75vw; filter: blur(65px); }
   .topbar { left: 8px; right: 8px; top: max(7px,env(safe-area-inset-top)); height: 54px; grid-template-columns: 1fr auto; border-radius: 16px; }
   .brand-copy small, .system-actions .version, .system-actions .connection, .system-actions .fps-mode, .pathbar { display: none; }
