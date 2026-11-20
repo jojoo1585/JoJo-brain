@@ -2,131 +2,107 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090a0f">
-  <meta name="description" content="JoJo Brain — visueel Runnix Control Center voor Running, Development en Home.">
-  <title>JoJo Brain · Runnix Control Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090b12">
+  <meta name="description" content="JoJo — jouw persoonlijke control center voor Sport & Health, Home en Development.">
+  <meta name="application-name" content="JoJo">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="JoJo">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
-  <script src="config.js" defer></script>
-  <script src="app.js" defer></script>
+  <title>JoJo · Personal Control Center</title>
 </head>
 <body>
-  <a class="skip-link" href="#brainMap">Naar de brainmap</a>
+  <a class="skip-link" href="#brain-map">Ga naar de navigatie</a>
 
-  <main class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="#brainMap" aria-label="JoJo Brain home">
-        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span><strong id="appTitle">JoJo Brain</strong><small id="appSubtitle">Runnix Control Center</small></span>
-      </a>
-
-      <nav class="domain-switcher" aria-label="Filter domein">
-        <button class="filter-button is-active" type="button" data-filter="all" aria-pressed="true">Alles</button>
-        <button class="filter-button" type="button" data-filter="running" aria-pressed="false"><span class="filter-dot running"></span>Running</button>
-        <button class="filter-button" type="button" data-filter="development" aria-pressed="false"><span class="filter-dot development"></span>Development</button>
-        <button class="filter-button" type="button" data-filter="home" aria-pressed="false"><span class="filter-dot home"></span>Home</button>
-      </nav>
-
-      <div class="safe-badge" title="Statische navigatie zonder secrets of health data">
-        <span></span>V1 · SAFE STATIC
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="brand" type="button" data-action="home" aria-label="Terug naar JoJo start">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span>
+          <strong>JOJO</strong>
+          <small>PERSONAL CONTROL CENTER</small>
+        </span>
+      </button>
+      <div class="header-actions">
+        <span class="connection" id="connection-status" role="status">
+          <span class="connection-dot" aria-hidden="true"></span>
+          <span>ONLINE</span>
+        </span>
+        <button class="install-button" id="install-button" type="button" hidden>
+          <span aria-hidden="true">↓</span> Installeer app
+        </button>
+        <span class="version-badge">V0.2.0 · PWA</span>
       </div>
     </header>
 
-    <section class="hero" aria-labelledby="heroTitle">
-      <div>
-        <p class="eyebrow">JOUW PERSOONLIJKE RUNNING ECOSYSTEEM</p>
-        <h1 id="heroTitle">Eén brein. <em>Elke route.</em></h1>
-      </div>
-      <p class="hero-copy">Runnix staat centraal. Volg de actieve datastromen, open je tools en houd toekomstige koppelingen zichtbaar zonder ze nu al af te dwingen.</p>
-    </section>
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="kicker">JOUW DIGITALE ECOSYSTEEM</p>
+          <h1 id="page-title">Eén brein.<br><span>Jouw routes.</span></h1>
+        </div>
+        <p class="intro-copy">JoJo verbindt je sport, gezondheid, thuisomgeving en ontwikkeling in één installeerbare app — zonder privé-adressen openbaar te maken.</p>
+      </section>
 
-    <section class="workspace" aria-label="JoJo Brain werkvlak">
-      <div id="brainMap" class="brain-map" tabindex="-1">
-        <div class="map-label label-running"><span></span>RUNNING</div>
-        <div class="map-label label-development"><span></span>DEVELOPMENT</div>
-        <div class="map-label label-home"><span></span>HOME</div>
-        <div class="map-orbit orbit-one" aria-hidden="true"></div>
-        <div class="map-orbit orbit-two" aria-hidden="true"></div>
-        <svg id="connections" class="connections" aria-hidden="true"></svg>
+      <nav class="context-bar" aria-label="Pad binnen JoJo">
+        <div class="nav-controls">
+          <button class="icon-button" type="button" data-action="back" aria-label="Eén niveau terug" title="Terug">
+            <span aria-hidden="true">←</span>
+          </button>
+          <button class="icon-button" type="button" data-action="home" aria-label="Naar JoJo start" title="JoJo start">
+            <span aria-hidden="true">⌂</span>
+          </button>
+        </div>
+        <ol class="breadcrumbs" id="breadcrumbs"></ol>
+        <p class="context-hint" id="context-hint">Kies een domein om verder te gaan</p>
+      </nav>
 
-        <button class="brain-node node-running" style="--x:17%;--y:18%" type="button" data-node="garmin" data-domain="running" aria-label="Garmin Connect bekijken">
-          <span class="node-icon">G</span><span class="node-copy"><small>TRAINING BRON</small><strong>Garmin</strong><em>Health + activity data</em></span><span class="node-state active">ACTIEF</span>
-        </button>
+      <section class="workspace" aria-label="JoJo interactieve brainmap">
+        <div class="map-panel" id="brain-map">
+          <div class="map-grid" aria-hidden="true"></div>
+          <div class="orbit orbit-one" aria-hidden="true"></div>
+          <div class="orbit orbit-two" aria-hidden="true"></div>
+          <div class="map-label" id="map-label">JOJO</div>
+          <div class="node-stage" id="node-stage" aria-live="polite"></div>
+          <p class="swipe-hint"><span aria-hidden="true">↔</span> Tik op een route om die centraal te zetten</p>
+        </div>
 
-        <button class="brain-node node-running" style="--x:82%;--y:18%" type="button" data-node="strava" data-domain="running" aria-label="Strava bekijken">
-          <span class="node-icon">S</span><span class="node-copy"><small>SOCIAL + STREAMS</small><strong>Strava</strong><em>MCP/API-ready</em></span><span class="node-state future">FUTURE DATA</span>
-        </button>
+        <aside class="detail-panel" id="detail-panel" aria-labelledby="detail-title">
+          <div class="detail-topline">
+            <span class="domain-chip" id="detail-domain">ROOT</span>
+            <span class="status-chip" id="detail-status">LIVE</span>
+          </div>
+          <p class="detail-eyebrow" id="detail-eyebrow">PERSONAL CONTROL CENTER</p>
+          <h2 id="detail-title">JoJo</h2>
+          <p class="detail-description" id="detail-description"></p>
+          <div class="detail-flow" id="detail-flow"></div>
+          <ul class="detail-points" id="detail-points"></ul>
+          <div class="detail-actions" id="detail-actions"></div>
+          <p class="privacy-note" id="privacy-note"></p>
+        </aside>
+      </section>
+    </main>
 
-        <button class="brain-node node-running compact" style="--x:13%;--y:51%" type="button" data-node="tcx" data-domain="running" aria-label="TCX Import bekijken">
-          <span class="node-icon upload">↑</span><span class="node-copy"><small>ENRICHMENT</small><strong>TCX Import</strong><em>Trackpoint intelligence</em></span><span class="node-state future">NEXT</span>
-        </button>
+    <nav class="mobile-dock" aria-label="Snelle appnavigatie">
+      <button type="button" data-action="back"><span aria-hidden="true">←</span><small>Terug</small></button>
+      <button type="button" data-jump="sport-health"><span aria-hidden="true">◉</span><small>Sport</small></button>
+      <button class="dock-home" type="button" data-action="home"><span aria-hidden="true">J</span><small>JoJo</small></button>
+      <button type="button" data-jump="home"><span aria-hidden="true">⌂</span><small>Home</small></button>
+      <button type="button" data-jump="development"><span aria-hidden="true">⌘</span><small>Dev</small></button>
+    </nav>
 
-        <button class="brain-node node-core" style="--x:50%;--y:45%" type="button" data-node="runnix" data-domain="running" aria-label="Runnix bekijken">
-          <span class="core-pulse" aria-hidden="true"></span>
-          <span class="core-kicker">RUNNING INTELLIGENCE</span>
-          <strong>RUNNIX</strong>
-          <em>Plan · Execute · Learn</em>
-          <span class="core-action">PRIMARY HUB <b>↗</b></span>
-        </button>
-
-        <button class="brain-node node-development compact" style="--x:22%;--y:82%" type="button" data-node="github" data-domain="development" aria-label="GitHub bekijken">
-          <span class="node-icon code">&lt;/&gt;</span><span class="node-copy"><small>SOURCE OF TRUTH</small><strong>GitHub</strong><em>Private repositories</em></span><span class="node-state active">ACTIVE</span>
-        </button>
-
-        <button class="brain-node node-development mini" style="--x:40%;--y:88%" type="button" data-node="releases" data-domain="development" aria-label="Runnix Releases bekijken">
-          <span class="node-icon">R</span><span class="node-copy"><small>VERSIONED</small><strong>Releases</strong><em>Tags + rollback</em></span>
-        </button>
-
-        <button class="brain-node node-development mini" style="--x:58%;--y:88%" type="button" data-node="docs" data-domain="development" aria-label="Runnix documentatie bekijken">
-          <span class="node-icon">D</span><span class="node-copy"><small>MEMORY</small><strong>Docs</strong><em>Architecture + history</em></span>
-        </button>
-
-        <button class="brain-node node-home" style="--x:84%;--y:69%" type="button" data-node="synology" data-domain="home" aria-label="Synology DSM bekijken">
-          <span class="node-icon">N</span><span class="node-copy"><small>HOST</small><strong>Synology</strong><em>Local infrastructure</em></span><span class="node-state local">LOCAL</span>
-        </button>
-
-        <button class="brain-node node-home compact" style="--x:87%;--y:48%" type="button" data-node="grafana" data-domain="home" aria-label="Grafana bekijken">
-          <span class="node-icon graph">⌁</span><span class="node-copy"><small>OBSERVE</small><strong>Grafana</strong><em>Dashboards</em></span><span class="node-state local">LOCAL</span>
-        </button>
-
-        <button class="brain-node node-home mini" style="--x:80%;--y:89%" type="button" data-node="containers" data-domain="home" aria-label="Container Manager bekijken">
-          <span class="node-icon">C</span><span class="node-copy"><small>RUNTIME</small><strong>Containers</strong><em>Services</em></span>
-        </button>
-
-        <button class="brain-node node-home mini" style="--x:68%;--y:73%" type="button" data-node="influx" data-domain="home" aria-label="InfluxDB bekijken">
-          <span class="node-icon">I</span><span class="node-copy"><small>TIME SERIES</small><strong>InfluxDB</strong><em>Read-only source</em></span>
-        </button>
-      </div>
-
-      <aside class="inspector" aria-live="polite" aria-labelledby="inspectorTitle">
-        <div class="inspector-topline"><span id="inspectorDomain" class="domain-pill running">RUNNING</span><span id="inspectorAvailability" class="availability">LOCAL</span></div>
-        <p id="inspectorKicker" class="eyebrow">PRIMARY HUB</p>
-        <h2 id="inspectorTitle">Runnix</h2>
-        <p id="inspectorDescription" class="inspector-description">De centrale running intelligence-laag: planning, uitvoering, feedback en adaptatie.</p>
-        <div id="inspectorFlow" class="flow-card"><span>FLOW</span><strong>Plan → Execute → Learn</strong></div>
-        <ul id="inspectorFacts" class="fact-list">
-          <li>Stabiele baseline V5.8.0.10.6</li>
-          <li>Lokale trainingsomgeving</li>
-          <li>Centraal in alle datastromen</li>
-        </ul>
-        <a id="inspectorAction" class="primary-action is-disabled" href="#" aria-disabled="true">Runnix-link configureren <span>↗</span></a>
-        <p id="inspectorHint" class="inspector-hint">Voeg de lokale Runnix-URL toe in <code>config.js</code>.</p>
-      </aside>
-    </section>
-
-    <section class="mobile-map" aria-labelledby="mobileMapTitle">
-      <div class="section-heading"><p class="eyebrow">COMPACT NAVIGATION</p><h2 id="mobileMapTitle">Alle routes</h2></div>
-      <div id="mobileGrid" class="mobile-grid"></div>
-    </section>
-
-    <footer class="footer">
-      <div class="legend" aria-label="Legenda verbindingen">
-        <span><i class="line active"></i>Actieve datastroom</span>
-        <span><i class="line planned"></i>Toekomstige koppeling</span>
-        <span><i class="line navigation"></i>Navigatie / lifecycle</span>
-      </div>
-      <p>Geen Work · geen secrets · geen health data in deze statische laag.</p>
+    <footer>
+      <p>JoJo V0.2.0 · Mobile/PWA foundation</p>
+      <p>Publieke configuratie zonder secrets of lokale infrastructuuradressen.</p>
     </footer>
-  </main>
+  </div>
+
+  <noscript><p class="noscript">JoJo heeft JavaScript nodig voor de interactieve navigatie.</p></noscript>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

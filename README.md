@@ -1,34 +1,65 @@
-# JoJo Brain
+# JoJo Brain v0.2.0
 
-Een losgekoppelde, statische en responsive **Running + Development + Home**-navigatiekaart met Runnix centraal.
+JoJo is een mobile-first **Personal Control Center** voor drie domeinen:
 
-## V1
+- **Sport & Health** — Runnix, Garmin, Strava en toekomstige healthcontext;
+- **Home** — Synology, monitoring en self-hosted services;
+- **Development** — GitHub, repositories, releases en documentatie.
 
-- organische brainmap op desktop;
-- compacte domeinkaarten op mobiel;
-- Running: Runnix, Garmin, Strava en TCX Import;
-- Development: GitHub, Releases en Docs;
-- Home: Synology, Grafana, Container Manager en InfluxDB;
-- onderscheid tussen actieve, lokale en toekomstige verbindingen;
-- geen secrets, accounts of persoonlijke trainingsdata.
+V0.2.0 verandert de app van een Runnix-centrische desktopkaart naar een JoJo-centrische, installeerbare PWA. Een gekozen tak komt centraal te staan; daarna verschijnen alleen de relevante volgende routes.
 
-## Configuratie
+## Belangrijkste functies
 
-Pas alleen `config.js` aan. Lege URL's blijven veilig zichtbaar als **Nog configureren**. Zet geen tokens, credentials of gevoelige queryparameters in dit bestand: alles in een statische website is leesbaar voor bezoekers.
+- JoJo als centrale root;
+- drill-downnavigatie met breadcrumbs, terug- en homeknop;
+- mobiele app-layout plus desktop brainmap;
+- mobiele quick dock voor Sport, JoJo, Home en Development;
+- dynamisch detailpaneel per node;
+- PWA-manifest, app-iconen, installprompt en standalone display;
+- service worker en offline app-shell;
+- directe publieke links voor Garmin, Strava en GitHub;
+- lokale/private links bewust leeg;
+- volledig statisch: geen buildstap en geen externe frontenddependencies.
 
-## Lokaal openen
+## Lokaal bekijken
+
+Dubbelklikken op `index.html` toont de interface. Voor service-worker- en PWA-tests is een lokale webserver nodig:
 
 ```bash
-python3 -m http.server 8080
-# open http://localhost:8080
+npm run serve
 ```
 
-## Valideren
+Open daarna `http://localhost:8080`.
+
+## Testen
 
 ```bash
-node scripts/validate.mjs
+npm test
 ```
 
-## Publicatie
+De validatie controleert onder meer de kernbestanden, manifest-iconen, shortcuts, cacheversie, navigatiestructuur en lege lokale URL’s.
 
-De repository bevat een Pages-workflow. GitHub Pages is alleen geschikt als de map geen geheimen of privédata bevat. Lokale NAS-links werken buiten het thuisnetwerk pas nadat veilige externe toegang afzonderlijk is ontworpen.
+## Links configureren
+
+Open `config.js`.
+
+Publieke links mogen worden ingevuld. Laat adressen voor Runnix, Synology, DSM, Grafana, InfluxDB en Container Manager leeg in een publieke repository, tenzij ze via een bewust beveiligde publieke toegangspoort lopen.
+
+**Nooit toevoegen:** wachtwoorden, tokens, API-sleutels, cookies, NAS-credentials of trainingsbestanden.
+
+## Installeren op een gsm
+
+1. Publiceer via GitHub Pages.
+2. Open de Pages-URL op de gsm.
+3. Android/Chrome: kies **App installeren** of **Toevoegen aan startscherm**.
+4. iPhone/Safari: kies **Deel → Zet op beginscherm**.
+
+De browser bepaalt wanneer de automatische installatieknop zichtbaar wordt. Op iOS verloopt installatie altijd via het Deel-menu.
+
+## Publiceren
+
+De bestaande workflow `.github/workflows/deploy-pages.yml` valideert de app en publiceert de repositoryroot naar GitHub Pages na een push naar `main`.
+
+## Privacy
+
+JoJo v0.2.0 bevat geen persoonlijke trainingsdata, API-integraties, accounts, analytics of secrets. De PWA cachet alleen de statische app-shell op het toestel.
