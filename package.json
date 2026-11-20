@@ -1,8 +1,8 @@
 {
   "name": "jojo-brain",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "JoJo Personal Control Center — static mobile-first PWA",
+  "description": "JoJo Brain Living Neural Universe — static mobile-first PWA",
   "scripts": {
     "test": "node tests/validate.mjs",
     "serve": "python3 -m http.server 8080"

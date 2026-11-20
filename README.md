@@ -1,35 +1,41 @@
-# JoJo Brain v0.2.0
+# JoJo Brain V0.3.0 — Living Neural Universe
 
-JoJo is een mobile-first **Personal Control Center** voor drie domeinen:
+JoJo Brain is een mobile-first persoonlijke navigatie-PWA. V0.3.0 maakt van de vaste V0.2-kaart een levend ruimtelijk universum waarin JoJo het centrale anker blijft en domeinen als fysiek verbonden clusters reageren.
 
-- **Sport & Health** — Runnix, Garmin, Strava en toekomstige healthcontext;
-- **Home** — Synology, monitoring en self-hosted services;
-- **Development** — GitHub, repositories, releases en documentatie.
+## Hoofdstructuur
 
-V0.2.0 verandert de app van een Runnix-centrische desktopkaart naar een JoJo-centrische, installeerbare PWA. Een gekozen tak komt centraal te staan; daarna verschijnen alleen de relevante volgende routes.
+- **JoJo** — centrale root en persoonlijk control center.
+- **Sport & Health** — eerste volledig uitgewerkte cluster met Runnix, Garmin, Strava en Health.
+- **Home** — secundaire hoofdtak voor lokale infrastructuur en monitoring.
+- **Development** — secundaire hoofdtak voor broncode, releases en JoJo-projectdocumentatie.
 
-## Belangrijkste functies
+## V0.3.0 in het kort
 
-- JoJo als centrale root;
-- drill-downnavigatie met breadcrumbs, terug- en homeknop;
-- mobiele app-layout plus desktop brainmap;
-- mobiele quick dock voor Sport, JoJo, Home en Development;
-- dynamisch detailpaneel per node;
-- PWA-manifest, app-iconen, installprompt en standalone display;
-- service worker en offline app-shell;
-- directe publieke links voor Garmin, Strava en GitHub;
-- lokale/private links bewust leeg;
-- volledig statisch: geen buildstap en geen externe frontenddependencies.
+- full-screen spatial graph;
+- lichte springfysica zonder externe library;
+- sleepbare nodes, waarbij verbonden nodes fysiek reageren;
+- subtiele zweefbeweging en bewegende signaalpulsen;
+- canvas-gebaseerde sterren- en neurale achtergrond;
+- focus/zoomovergang wanneer een cluster opent;
+- toegankelijke DOM-buttons bovenop de canvaslaag;
+- begrensde pixel ratio en lager particle-budget op telefoons;
+- `prefers-reduced-motion`-ondersteuning;
+- behouden PWA-installatie, appiconen, offline cache en GitHub Pages-workflow.
 
-## Lokaal bekijken
+## Gebruiken
 
-Dubbelklikken op `index.html` toont de interface. Voor service-worker- en PWA-tests is een lokale webserver nodig:
+- **Tik/klik** op een node om de cluster te focussen of het detail te openen.
+- **Sleep** een node. De veren trekken verbonden nodes mee en brengen het geheel geleidelijk terug naar de clusterlayout.
+- Gebruik **Terug**, de breadcrumbs of de JoJo-knop om naar een hoger niveau te gaan.
+- Op mobiel opent detailinformatie als een bottom sheet.
+
+## Lokaal uitvoeren
 
 ```bash
 npm run serve
 ```
 
-Open daarna `http://localhost:8080`.
+Open `http://localhost:8080`.
 
 ## Testen
 
@@ -37,29 +43,19 @@ Open daarna `http://localhost:8080`.
 npm test
 ```
 
-De validatie controleert onder meer de kernbestanden, manifest-iconen, shortcuts, cacheversie, navigatiestructuur en lege lokale URL’s.
+Zie `TESTING.md` voor de volledige verificatiematrix.
 
 ## Links configureren
 
-Open `config.js`.
+Alle configureerbare URL's staan in `config.js`. Publieke links mogen worden ingevuld. Lokale of private adressen blijven leeg in de publieke repository. Voeg nooit tokens, wachtwoorden, cookies of persoonsgegevens toe.
 
-Publieke links mogen worden ingevuld. Laat adressen voor Runnix, Synology, DSM, Grafana, InfluxDB en Container Manager leeg in een publieke repository, tenzij ze via een bewust beveiligde publieke toegangspoort lopen.
+## Documentatie
 
-**Nooit toevoegen:** wachtwoorden, tokens, API-sleutels, cookies, NAS-credentials of trainingsbestanden.
-
-## Installeren op een gsm
-
-1. Publiceer via GitHub Pages.
-2. Open de Pages-URL op de gsm.
-3. Android/Chrome: kies **App installeren** of **Toevoegen aan startscherm**.
-4. iPhone/Safari: kies **Deel → Zet op beginscherm**.
-
-De browser bepaalt wanneer de automatische installatieknop zichtbaar wordt. Op iOS verloopt installatie altijd via het Deel-menu.
-
-## Publiceren
-
-De bestaande workflow `.github/workflows/deploy-pages.yml` valideert de app en publiceert de repositoryroot naar GitHub Pages na een push naar `main`.
-
-## Privacy
-
-JoJo v0.2.0 bevat geen persoonlijke trainingsdata, API-integraties, accounts, analytics of secrets. De PWA cachet alleen de statische app-shell op het toestel.
+- `ARCHITECTURE.md` — actuele componenten, datastroom en grenzen;
+- `ENGINE.md` — fysica- en renderengine;
+- `ROADMAP.md` — volgende ontwikkelstappen;
+- `TESTING.md` — geautomatiseerde en manuele checks;
+- `TEST_REPORT-V0.3.0.md` — uitgevoerd testresultaat voor deze build;
+- `VERSION_HISTORY.md` — versie-overzicht;
+- `CONVERSATION_LOG.md` — beslissingen per build;
+- `CHANGELOG.md` en `CHANGELOG-V0.3.0.md` — concrete wijzigingen.

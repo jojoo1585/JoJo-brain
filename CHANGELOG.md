@@ -1,29 +1,15 @@
-# Changelog
+# Changelog — JoJo Brain
 
-## 0.2.0 — Mobile/PWA foundation
+## V0.3.0 — Living Neural Universe
 
-### Added
+Zie `CHANGELOG-V0.3.0.md` voor de volledige buildwijzigingen.
 
-- JoJo als centrale root.
-- Hoofddomeinen Sport & Health, Home en Development.
-- Drill-downnavigatie waarin de gekozen tak centraal komt te staan.
-- Runnix-routes Vandaag, Planning, Progressie, Intelligence en TCX Import.
-- Health-routes Recovery, Slaap & HRV en Body.
-- Homegroepering Synology, Monitoring en Services.
-- Mobiele quick dock, breadcrumbs, terug- en homeknoppen.
-- PWA-manifest, app-iconen, maskable iconen en iOS touch icon.
-- Service worker, offline app-shell en offline fallback.
-- Installatieprompt waar de browser die ondersteunt.
-- GitHub Actions-validatie en Pages-deployment.
-- Geautomatiseerde statische validatie.
+Samenvatting: full-screen spatial graph, springfysica, sleepbare nodes, neurale canvasachtergrond, clusterfocus, volledig uitgewerkte Sport & Health-cluster, mobiele performanceprofilering en systematische projectdocumentatie.
 
-### Changed
+## V0.2.0 — Mobile/PWA Foundation
 
-- Desktopbrainmap is niet langer Runnix-centrisch; Runnix is nu een onderdeel van Sport & Health.
-- Lokale infrastructuur is hiërarchisch gegroepeerd in plaats van als gelijkwaardige losse nodes.
-- Development is bewust ondersteunend gepositioneerd.
+JoJo als centrale root, drill-downnavigatie, mobiele dock, PWA-manifest, iconen, installprompt, offline app-shell en Pages-deployment.
 
-### Security
+## V0.1.0 — Initial Brainmap
 
-- Lokale Runnix-, Synology-, DSM-, Grafana-, InfluxDB- en Container Manager-URL’s blijven leeg.
-- Geen persoonlijke data, tokens, credentials of analytics toegevoegd.
+Eerste statische brainmap met domeinnodes, detailpaneel en gescheiden publieke/lokale linkconfiguratie.

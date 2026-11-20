@@ -2,10 +2,10 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#090b12">
-  <meta name="description" content="JoJo — jouw persoonlijke control center voor Sport & Health, Home en Development.">
-  <meta name="application-name" content="JoJo">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#05070d">
+  <meta name="description" content="JoJo Brain — jouw levende persoonlijke universum voor Sport & Health, Home en Development.">
+  <meta name="application-name" content="JoJo Brain">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="JoJo">
@@ -13,96 +13,77 @@
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
-  <title>JoJo · Personal Control Center</title>
+  <title>JoJo · Living Neural Universe</title>
 </head>
 <body>
-  <a class="skip-link" href="#brain-map">Ga naar de navigatie</a>
+  <a class="skip-link" href="#universe">Ga naar het universum</a>
+  <main class="universe" id="universe" aria-label="JoJo Living Neural Universe">
+    <canvas id="space-canvas" aria-hidden="true"></canvas>
+    <div class="nebula nebula-a" aria-hidden="true"></div>
+    <div class="nebula nebula-b" aria-hidden="true"></div>
 
-  <div class="app-shell">
-    <header class="app-header">
-      <button class="brand" type="button" data-action="home" aria-label="Terug naar JoJo start">
-        <span class="brand-mark" aria-hidden="true">J</span>
-        <span>
-          <strong>JOJO</strong>
-          <small>PERSONAL CONTROL CENTER</small>
-        </span>
+    <header class="topbar">
+      <button class="brand" type="button" data-action="root" aria-label="Terug naar JoJo">
+        <span class="brand-orbit" aria-hidden="true"><span>J</span></span>
+        <span class="brand-copy"><strong>JOJO</strong><small>LIVING NEURAL UNIVERSE</small></span>
       </button>
-      <div class="header-actions">
-        <span class="connection" id="connection-status" role="status">
-          <span class="connection-dot" aria-hidden="true"></span>
-          <span>ONLINE</span>
-        </span>
-        <button class="install-button" id="install-button" type="button" hidden>
-          <span aria-hidden="true">↓</span> Installeer app
-        </button>
-        <span class="version-badge">V0.2.0 · PWA</span>
+      <nav class="pathbar" aria-label="Huidig pad">
+        <button class="round-button" type="button" data-action="back" aria-label="Terug" title="Terug">←</button>
+        <ol id="breadcrumbs"></ol>
+      </nav>
+      <div class="system-actions">
+        <span class="fps-mode" id="motion-mode">LIVE</span>
+        <span class="connection" id="connection-status" role="status"><i></i><span>ONLINE</span></span>
+        <button class="install-button" id="install-button" type="button" hidden>↓ Installeer</button>
+        <span class="version">V0.3.0</span>
       </div>
     </header>
 
-    <main>
-      <section class="intro" aria-labelledby="page-title">
+    <section class="graph-viewport" id="graph-viewport" aria-label="Interactieve neurale kaart">
+      <div class="cluster-title" id="cluster-title" aria-live="polite">
+        <small>JOJO UNIVERSE</small>
+        <strong>Alles verbonden.</strong>
+      </div>
+      <div class="node-layer" id="node-layer"></div>
+      <div class="gesture-help" id="gesture-help"><span>↔</span> Sleep nodes · tik om te focussen</div>
+      <div class="depth-indicator" aria-hidden="true"><i></i><i></i><i></i></div>
+    </section>
+
+    <aside class="info-drawer is-collapsed" id="info-drawer" aria-labelledby="detail-title">
+      <button class="drawer-handle" type="button" data-action="toggle-drawer" aria-label="Infopaneel in- of uitklappen"><span></span></button>
+      <div class="drawer-heading">
         <div>
-          <p class="kicker">JOUW DIGITALE ECOSYSTEEM</p>
-          <h1 id="page-title">Eén brein.<br><span>Jouw routes.</span></h1>
+          <span class="domain-chip" id="detail-domain">ROOT</span>
+          <span class="status-chip" id="detail-status">LIVE</span>
         </div>
-        <p class="intro-copy">JoJo verbindt je sport, gezondheid, thuisomgeving en ontwikkeling in één installeerbare app — zonder privé-adressen openbaar te maken.</p>
-      </section>
+        <button class="drawer-close" type="button" data-action="close-drawer" aria-label="Infopaneel sluiten">×</button>
+      </div>
+      <p class="detail-eyebrow" id="detail-eyebrow">PERSONAL CONTROL CENTER</p>
+      <h1 id="detail-title">JoJo</h1>
+      <p class="detail-description" id="detail-description"></p>
+      <div class="detail-flow" id="detail-flow"></div>
+      <ul class="detail-points" id="detail-points"></ul>
+      <div class="detail-actions" id="detail-actions"></div>
+      <p class="privacy-note" id="privacy-note"></p>
+    </aside>
 
-      <nav class="context-bar" aria-label="Pad binnen JoJo">
-        <div class="nav-controls">
-          <button class="icon-button" type="button" data-action="back" aria-label="Eén niveau terug" title="Terug">
-            <span aria-hidden="true">←</span>
-          </button>
-          <button class="icon-button" type="button" data-action="home" aria-label="Naar JoJo start" title="JoJo start">
-            <span aria-hidden="true">⌂</span>
-          </button>
-        </div>
-        <ol class="breadcrumbs" id="breadcrumbs"></ol>
-        <p class="context-hint" id="context-hint">Kies een domein om verder te gaan</p>
-      </nav>
-
-      <section class="workspace" aria-label="JoJo interactieve brainmap">
-        <div class="map-panel" id="brain-map">
-          <div class="map-grid" aria-hidden="true"></div>
-          <div class="orbit orbit-one" aria-hidden="true"></div>
-          <div class="orbit orbit-two" aria-hidden="true"></div>
-          <div class="map-label" id="map-label">JOJO</div>
-          <div class="node-stage" id="node-stage" aria-live="polite"></div>
-          <p class="swipe-hint"><span aria-hidden="true">↔</span> Tik op een route om die centraal te zetten</p>
-        </div>
-
-        <aside class="detail-panel" id="detail-panel" aria-labelledby="detail-title">
-          <div class="detail-topline">
-            <span class="domain-chip" id="detail-domain">ROOT</span>
-            <span class="status-chip" id="detail-status">LIVE</span>
-          </div>
-          <p class="detail-eyebrow" id="detail-eyebrow">PERSONAL CONTROL CENTER</p>
-          <h2 id="detail-title">JoJo</h2>
-          <p class="detail-description" id="detail-description"></p>
-          <div class="detail-flow" id="detail-flow"></div>
-          <ul class="detail-points" id="detail-points"></ul>
-          <div class="detail-actions" id="detail-actions"></div>
-          <p class="privacy-note" id="privacy-note"></p>
-        </aside>
-      </section>
-    </main>
-
-    <nav class="mobile-dock" aria-label="Snelle appnavigatie">
-      <button type="button" data-action="back"><span aria-hidden="true">←</span><small>Terug</small></button>
-      <button type="button" data-jump="sport-health"><span aria-hidden="true">◉</span><small>Sport</small></button>
-      <button class="dock-home" type="button" data-action="home"><span aria-hidden="true">J</span><small>JoJo</small></button>
-      <button type="button" data-jump="home"><span aria-hidden="true">⌂</span><small>Home</small></button>
-      <button type="button" data-jump="development"><span aria-hidden="true">⌘</span><small>Dev</small></button>
+    <nav class="mobile-dock" aria-label="Snelle navigatie">
+      <button type="button" data-action="back"><span>←</span><small>Terug</small></button>
+      <button type="button" data-node="sport-health"><span>◉</span><small>Sport</small></button>
+      <button class="dock-jojo" type="button" data-action="root"><span>J</span><small>JoJo</small></button>
+      <button type="button" data-node="home"><span>⌂</span><small>Home</small></button>
+      <button type="button" data-node="development"><span>⌘</span><small>Dev</small></button>
     </nav>
 
-    <footer>
-      <p>JoJo V0.2.0 · Mobile/PWA foundation</p>
-      <p>Publieke configuratie zonder secrets of lokale infrastructuuradressen.</p>
-    </footer>
-  </div>
-
-  <noscript><p class="noscript">JoJo heeft JavaScript nodig voor de interactieve navigatie.</p></noscript>
+    <div class="boot-screen" id="boot-screen" aria-hidden="true">
+      <div class="boot-orbit"><span>J</span></div>
+      <p>NEURAL UNIVERSE INITIALISEREN</p>
+    </div>
+  </main>
+  <noscript><p class="noscript">JoJo heeft JavaScript nodig voor de interactieve neurale kaart.</p></noscript>
   <script src="config.js"></script>
+  <script src="graph-data.js"></script>
+  <script src="neural-engine.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

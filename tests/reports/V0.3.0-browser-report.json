@@ -1,0 +1,35 @@
+{
+  "desktop": {
+    "rootNodes": 4,
+    "rafCallbacksPerSecond": 12,
+    "consoleErrors": [],
+    "connectedReactionPx": 1.45,
+    "sportNodeOverlaps": [],
+    "serviceWorkerActive": true,
+    "offlineRootRendered": true
+  },
+  "phone": {
+    "rootNodes": 4,
+    "rafCallbacksPerSecond": 32,
+    "consoleErrors": [],
+    "sportNodeOverlaps": [],
+    "serviceWorkerActive": true,
+    "offlineRootRendered": true
+  },
+  "landscape": {
+    "rootNodes": 4,
+    "rafCallbacksPerSecond": 26,
+    "consoleErrors": [],
+    "sportNodeOverlaps": [],
+    "serviceWorkerActive": true,
+    "offlineRootRendered": true
+  },
+  "tablet": {
+    "rootNodes": 4,
+    "rafCallbacksPerSecond": 18,
+    "consoleErrors": [],
+    "sportNodeOverlaps": [],
+    "serviceWorkerActive": true,
+    "offlineRootRendered": true
+  }
+}

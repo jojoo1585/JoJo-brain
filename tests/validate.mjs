@@ -9,51 +9,75 @@ const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
 
 const required = [
-  'index.html', 'styles.css', 'config.js', 'app.js', 'manifest.webmanifest',
-  'service-worker.js', 'offline.html', 'assets/icons/favicon.svg',
-  'assets/icons/icon-192.png', 'assets/icons/icon-512.png',
-  'assets/icons/maskable-192.png', 'assets/icons/maskable-512.png',
-  'assets/icons/apple-touch-icon.png'
+  'index.html','styles.css','config.js','graph-data.js','neural-engine.js','app.js',
+  'manifest.webmanifest','service-worker.js','offline.html','VERSION','README.md','SECURITY.md','PUBLISHING.md',
+  'ARCHITECTURE.md','ENGINE.md','ROADMAP.md','TESTING.md','TEST_REPORT-V0.3.0.md','VERSION_HISTORY.md','CONVERSATION_LOG.md',
+  'CHANGELOG.md','CHANGELOG-V0.3.0.md','assets/icons/favicon.svg','assets/icons/icon-192.png',
+  'assets/icons/icon-512.png','assets/icons/maskable-192.png','assets/icons/maskable-512.png','assets/icons/apple-touch-icon.png'
 ];
 required.forEach((file) => assert(exists(file), `Ontbrekend bestand: ${file}`));
 
+const version = read('VERSION').trim();
+assert(version === '0.3.0', 'VERSION moet 0.3.0 zijn');
+const pkg = JSON.parse(read('package.json'));
+assert(pkg.version === version, 'package.json-versie wijkt af');
+
 const html = read('index.html');
 assert(html.includes('lang="nl"'), 'HTML-taal ontbreekt');
-assert(html.includes('manifest.webmanifest'), 'Manifest-link ontbreekt');
-assert(html.includes('viewport-fit=cover'), 'Mobiele safe-area viewport ontbreekt');
-assert((html.match(/id="[^"]+"/g) || []).length === new Set((html.match(/id="[^"]+"/g) || []).map((id) => id.slice(4,-1))).size, 'Dubbele HTML-id gevonden');
+assert(html.includes('viewport-fit=cover'), 'Safe-area viewport ontbreekt');
+['space-canvas','graph-viewport','node-layer','info-drawer'].forEach((id) => assert(html.includes(`id="${id}"`), `App-shell mist ${id}`));
+assert(html.includes('class="mobile-dock"'), 'Mobiele dock ontbreekt');
+['config.js','graph-data.js','neural-engine.js','app.js'].forEach((asset) => assert(html.includes(`src="${asset}"`), `Script ontbreekt in index: ${asset}`));
+const ids = (html.match(/id="[^"]+"/g) || []).map((item) => item.slice(4,-1));
+assert(ids.length === new Set(ids).size, 'Dubbele HTML-id gevonden');
 
 const manifest = JSON.parse(read('manifest.webmanifest'));
 assert(manifest.display === 'standalone', 'PWA display moet standalone zijn');
 assert(manifest.start_url === './' && manifest.scope === './', 'Relatieve start_url/scope verwacht');
-assert(manifest.icons.some((icon) => icon.sizes === '192x192' && icon.purpose === 'any'), '192x192 app-icoon ontbreekt');
-assert(manifest.icons.some((icon) => icon.sizes === '512x512' && icon.purpose === 'maskable'), '512x512 maskable icoon ontbreekt');
-manifest.icons.forEach((icon) => assert(exists(icon.src), `Manifest verwijst naar ontbrekend icoon: ${icon.src}`));
+assert(manifest.name.includes('Living Neural Universe'), 'V0.3 manifestnaam ontbreekt');
+manifest.icons.forEach((icon) => assert(exists(icon.src), `Manifesticoon ontbreekt: ${icon.src}`));
+assert(manifest.icons.some((icon) => icon.sizes === '512x512' && icon.purpose === 'maskable'), '512 maskable icon ontbreekt');
+assert(manifest.shortcuts.length === 3, 'Drie PWA shortcuts verwacht');
 
-const sw = read('service-worker.js');
-assert(sw.includes("jojo-brain-v0.2.0"), 'Service-worker cacheversie klopt niet');
-required.filter((file) => !file.endsWith('favicon.svg')).forEach((file) => {
-  if (['service-worker.js'].includes(file)) return;
-  assert(sw.includes(`./${file}`) || file === 'manifest.webmanifest', `App-shell mist ${file}`);
+const configSandbox = { window: {} };
+vm.runInNewContext(read('config.js'), configSandbox, { filename: 'config.js' });
+assert(configSandbox.window.JOJO_CONFIG.version === version, 'Configversie wijkt af');
+['runnix','synology','dsm','grafana','influxdb','containers'].forEach((key) => assert(configSandbox.window.JOJO_CONFIG.links[key] === '', `Lokale URL ${key} moet leeg blijven`));
+
+const graphSandbox = { window: {}, Object };
+vm.runInNewContext(read('graph-data.js'), graphSandbox, { filename: 'graph-data.js' });
+const graph = graphSandbox.window.JOJO_GRAPH;
+assert(graph?.jojo?.children?.join(',') === 'sport-health,home,development', 'JoJo-hoofdtakken wijken af');
+assert(graph['sport-health']?.children?.join(',') === 'runnix,garmin,strava,health', 'Sport & Health-satellieten wijken af');
+assert(graph.garmin?.children?.length === 3, 'Garmin-subcluster onvolledig');
+assert(graph.strava?.children?.length === 3, 'Strava-subcluster onvolledig');
+assert(graph.health?.children?.length === 3, 'Health-subcluster onvolledig');
+Object.values(graph).forEach((node) => {
+  if (node.parent) assert(Boolean(graph[node.parent]), `Onbekende parent voor ${node.id}`);
+  (node.children || []).forEach((child) => assert(Boolean(graph[child]), `Onbekend child ${child} van ${node.id}`));
 });
 
-const configSource = read('config.js');
-const sandbox = { window: {} };
-vm.runInNewContext(configSource, sandbox, { filename: 'config.js' });
-assert(sandbox.window.JOJO_CONFIG.version === '0.2.0', 'Configversie klopt niet');
-const localKeys = ['runnix','synology','dsm','grafana','influxdb','containers'];
-localKeys.forEach((key) => assert(sandbox.window.JOJO_CONFIG.links[key] === '', `Lokale URL ${key} moet leeg blijven`));
-assert(!/(token|password|secret)\s*[:=]\s*['"][^'"]+/i.test(configSource), 'Mogelijk geheim gevonden in config.js');
+const engine = read('neural-engine.js');
+['startDrag','dragTo','endDrag','physics','particles','prefers-reduced-motion'].forEach((term) => assert(engine.includes(term), `Engine-capability ontbreekt: ${term}`));
+assert(engine.includes('this.mobile ? 32 : 62'), 'Adaptief particle-budget ontbreekt');
+assert(engine.includes('1.25 : 1.6'), 'DPR-cap ontbreekt');
 
-const app = read('app.js');
-['sport-health','runnix','garmin','strava','health','home','synology','monitoring','services','development','github'].forEach((id) => assert(app.includes(`id: '${id}'`) || app.includes(`'${id}':`), `Navigatienode ontbreekt: ${id}`));
-assert(app.includes('beforeinstallprompt'), 'Installatieprompt ontbreekt');
-assert(app.includes('serviceWorker.register'), 'Service-workerregistratie ontbreekt');
+const sw = read('service-worker.js');
+assert(sw.includes('jojo-brain-v0.3.0'), 'Service-workercacheversie klopt niet');
+['graph-data.js','neural-engine.js','app.js','styles.css','offline.html'].forEach((asset) => assert(sw.includes(`./${asset}`), `App-shell mist ${asset}`));
+
+const allText = required.filter((file) => exists(file) && !file.endsWith('.png')).map(read).join('\n');
+assert(!/(password|api[_ -]?key|secret|token)\s*[:=]\s*['"][^'"]{3,}/i.test(allText), 'Mogelijk geheim gevonden');
+assert(!/https?:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/i.test(allText), 'Privé-IP-adres gevonden');
+
+const architecture = read('ARCHITECTURE.md');
+assert(architecture.includes('V0.3.0') && architecture.includes('hybride spatial graph'), 'Architectuurdocument niet bijgewerkt voor V0.3');
+['ROADMAP.md','TESTING.md','VERSION_HISTORY.md','CONVERSATION_LOG.md','CHANGELOG-V0.3.0.md'].forEach((file) => assert(read(file).includes('V0.3.0'), `${file} mist V0.3.0`));
 
 if (errors.length) {
   console.error(`Validatie mislukt (${errors.length}):`);
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
-console.log(`JoJo Brain v${manifest.short_name === 'JoJo' ? '0.2.0' : '?'} validatie geslaagd.`);
-console.log(`${required.length} kernbestanden, ${manifest.icons.length} manifest-iconen en ${manifest.shortcuts.length} snelkoppelingen gecontroleerd.`);
+console.log(`JoJo Brain V${version} validatie geslaagd.`);
+console.log(`${required.length} kern- en documentatiebestanden, ${Object.keys(graph).length} nodes en ${manifest.icons.length} manifesticonen gecontroleerd.`);

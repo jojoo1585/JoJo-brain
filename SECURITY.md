@@ -1,19 +1,22 @@
-# Security
+# Security — JoJo Brain
 
-JoJo Brain is een publieke statische navigatie-app.
+JoJo Brain is een publieke statische navigatie-PWA.
 
-## Niet committen
+## Nooit committen
 
-- wachtwoorden, tokens, API-sleutels of cookies;
-- lokale NAS-, Runnix-, Grafana-, InfluxDB- of Container Manager-adressen;
-- TCX-, FIT-, GPX- of andere persoonlijke trainingsbestanden;
-- databasebestanden, exports of `.env`-bestanden;
-- private certificaten of sleutels.
+- tokens, wachtwoorden, API-sleutels, cookies of credentials;
+- lokale NAS-, dashboard-, database- of serviceadressen;
+- TCX-, FIT-, GPX- of andere persoonlijke bestanden;
+- databases, exports, `.env`-bestanden, certificaten of private keys.
 
 ## Links
 
-Gebruik `config.js` alleen voor publieke of bewust veilig gepubliceerde URL’s. Externe links openen met `noopener noreferrer`.
+`config.js` bevat alleen publieke of bewust veilig gepubliceerde URL's. Externe links gebruiken `noopener noreferrer`.
 
-## PWA-cache
+## Runtime
 
-De service worker cachet alleen first-party statische bestanden. Externe pagina’s en data worden niet door JoJo gecachet.
+- geen analytics;
+- geen remote scripts of frontend-CDN;
+- geen accountdata;
+- service worker cachet uitsluitend first-party statische assets;
+- physics en particles draaien volledig lokaal op het toestel.
