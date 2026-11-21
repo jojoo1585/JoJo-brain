@@ -2,7 +2,7 @@
   "id": "./",
   "name": "JoJo Brain · Living Neural Universe",
   "short_name": "JoJo",
-  "description": "JoJo Brain V0.4.0 — Sport & Health constellation.",
+  "description": "JoJo Brain V0.4.0.1 — Sport & Health deployment hotfix.",
   "lang": "nl-BE",
   "dir": "ltr",
   "start_url": "./",
@@ -23,25 +23,25 @@
   ],
   "icons": [
     {
-      "src": "assets/icons/icon-192.png?v=0.4.0",
+      "src": "assets/icons/icon-192.png?v=0.4.0.1",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/icons/icon-512.png?v=0.4.0",
+      "src": "assets/icons/icon-512.png?v=0.4.0.1",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/icons/maskable-192.png?v=0.4.0",
+      "src": "assets/icons/maskable-192.png?v=0.4.0.1",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "assets/icons/maskable-512.png?v=0.4.0",
+      "src": "assets/icons/maskable-512.png?v=0.4.0.1",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -54,7 +54,7 @@
       "url": "./#sport-health",
       "icons": [
         {
-          "src": "assets/icons/icon-192.png?v=0.4.0",
+          "src": "assets/icons/icon-192.png?v=0.4.0.1",
           "sizes": "192x192"
         }
       ]
@@ -65,7 +65,7 @@
       "url": "./#home",
       "icons": [
         {
-          "src": "assets/icons/icon-192.png?v=0.4.0",
+          "src": "assets/icons/icon-192.png?v=0.4.0.1",
           "sizes": "192x192"
         }
       ]
@@ -76,7 +76,7 @@
       "url": "./#development",
       "icons": [
         {
-          "src": "assets/icons/icon-192.png?v=0.4.0",
+          "src": "assets/icons/icon-192.png?v=0.4.0.1",
           "sizes": "192x192"
         }
       ]

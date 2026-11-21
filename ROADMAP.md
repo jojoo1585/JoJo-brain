@@ -1,6 +1,6 @@
 # Roadmap — JoJo Brain
 
-## Actuele baseline: V0.4.0
+## Actuele baseline: V0.4.0.1
 
 Sport & Health is het eerste volwassen JoJo-blok:
 
@@ -10,7 +10,9 @@ Sport & Health is het eerste volwassen JoJo-blok:
 - Health als uitbreidbare aggregator;
 - semantische datalijnen en een sterkere mobile-first space/neural experience.
 
-## Acceptatie V0.4.0
+De V0.4.0.1 deploymenthotfix publiceert deze baseline via afzonderlijke build/upload- en deployjobs met één expliciete `github-pages` artifact.
+
+## Acceptatie V0.4.0.1
 
 - praktijktest op de doeltelefoon;
 - controle van nodeafstand in portrait en landscape;

@@ -12,15 +12,16 @@ const required = [
   'index.html','styles.css','config.js','graph-data.js','neural-engine.js','app.js',
   'manifest.webmanifest','service-worker.js','offline.html','VERSION','README.md','SECURITY.md','PUBLISHING.md',
   'ARCHITECTURE.md','ENGINE.md','ROADMAP.md','TESTING.md','VERSION_HISTORY.md','CONVERSATION_LOG.md',
-  'CHANGELOG.md','CHANGELOG-V0.3.0.md','CHANGELOG-V0.3.0.1.md','CHANGELOG-V0.4.0.md',
-  'TEST_REPORT-V0.3.0.md','TEST_REPORT-V0.3.0.1.md','TEST_REPORT-V0.4.0.md',
+  'CHANGELOG.md','CHANGELOG-V0.3.0.md','CHANGELOG-V0.3.0.1.md','CHANGELOG-V0.4.0.md','CHANGELOG-V0.4.0.1.md',
+  'TEST_REPORT-V0.3.0.md','TEST_REPORT-V0.3.0.1.md','TEST_REPORT-V0.4.0.md','TEST_REPORT-V0.4.0.1.md',
+  '.github/workflows/deploy-pages.yml','.github/workflows/validate.yml',
   'assets/icons/favicon.svg','assets/icons/icon-192.png','assets/icons/icon-512.png',
   'assets/icons/maskable-192.png','assets/icons/maskable-512.png','assets/icons/apple-touch-icon.png'
 ];
 required.forEach((file) => assert(exists(file), `Ontbrekend bestand: ${file}`));
 
 const version = read('VERSION').trim();
-assert(version === '0.4.0', 'VERSION moet 0.4.0 zijn');
+assert(version === '0.4.0.1', 'VERSION moet 0.4.0.1 zijn');
 const pkg = JSON.parse(read('package.json'));
 assert(pkg.version === version, 'package.json-versie wijkt af');
 
@@ -40,7 +41,7 @@ assert(ids.length === new Set(ids).size, 'Dubbele HTML-id gevonden');
 const manifest = JSON.parse(read('manifest.webmanifest'));
 assert(manifest.display === 'standalone', 'PWA display moet standalone zijn');
 assert(manifest.start_url === './' && manifest.scope === './', 'Relatieve start_url/scope verwacht');
-assert(manifest.description.includes('V0.4.0'), 'V0.4 manifestbeschrijving ontbreekt');
+assert(manifest.description.includes('V0.4.0.1'), 'V0.4 manifestbeschrijving ontbreekt');
 manifest.icons.forEach((icon) => assert(exists(icon.src.split('?')[0]), `Manifesticoon ontbreekt: ${icon.src}`));
 assert(manifest.icons.every((icon) => icon.src.includes(`?v=${version}`)), 'Manifesticonen moeten release-versioned zijn');
 assert(manifest.icons.some((icon) => icon.sizes === '512x512' && icon.purpose === 'maskable'), '512 maskable icon ontbreekt');
@@ -82,8 +83,28 @@ assert(engine.includes("blue: [76, 151, 255]"), 'Garmin-blauw ontbreekt');
 const styles = read('styles.css');
 ['accent-blue','signal-legend','data-node-id="sport-health"','role-context','size-metric'].forEach((term) => assert(styles.includes(term), `V0.4-stijl ontbreekt: ${term}`));
 
+const pagesWorkflow = read('.github/workflows/deploy-pages.yml');
+const buildStart = pagesWorkflow.indexOf('\n  build:');
+const deployStart = pagesWorkflow.indexOf('\n  deploy:');
+const buildJob = buildStart >= 0 && deployStart > buildStart ? pagesWorkflow.slice(buildStart, deployStart) : '';
+const deployJob = deployStart >= 0 ? pagesWorkflow.slice(deployStart) : '';
+assert(buildStart >= 0 && deployStart > buildStart, 'Pages-workflow moet afzonderlijke build- en deployjobs bevatten');
+assert(buildJob.includes('run: npm test'), 'Buildjob moet de static app valideren');
+assert(buildJob.includes('uses: actions/configure-pages@v5'), 'Buildjob mist Configure Pages v5');
+assert(buildJob.includes('uses: actions/upload-pages-artifact@v5'), 'Pages-uploader moet v5 gebruiken');
+assert(buildJob.includes('name: github-pages'), 'Upload moet exact artifact github-pages produceren');
+assert(buildJob.includes('path: .'), 'Pages-upload moet de repositoryroot publiceren');
+assert(buildJob.includes('include-hidden-files: true'), 'Verborgen sitebestanden zoals .nojekyll moeten meegaan');
+assert(!buildJob.includes('actions/deploy-pages'), 'Deployment mag niet meer in de uploadjob staan');
+assert(deployJob.includes('needs: build'), 'Deployjob moet wachten op volledige artifactfinalisatie in build');
+assert(deployJob.includes('uses: actions/deploy-pages@v4'), 'Deployjob moet deploy-pages v4 gebruiken');
+assert(deployJob.includes('artifact_name: github-pages'), 'Deployjob moet exact artifact github-pages opvragen');
+assert(deployJob.includes('name: github-pages'), 'Deployjob moet environment github-pages behouden');
+assert(!deployJob.includes('upload-pages-artifact'), 'Upload mag niet opnieuw in de deployjob gebeuren');
+assert(buildJob.indexOf('run: npm test') < buildJob.indexOf('upload-pages-artifact@v5'), 'Validatie moet vóór artifactupload lopen');
+
 const sw = read('service-worker.js');
-assert(sw.includes("const RELEASE = '0.4.0'"), 'Service-workercacheversie klopt niet');
+assert(sw.includes("const RELEASE = '0.4.0.1'"), 'Service-workercacheversie klopt niet');
 ['graph-data.js','neural-engine.js','app.js','styles.css','offline.html'].forEach((asset) => assert(sw.includes(`./${asset}`), `App-shell mist ${asset}`));
 assert(sw.includes("cache: 'no-store'"), 'Navigatie moet HTTP-cache omzeilen');
 assert(sw.includes("url.searchParams.get('v') === RELEASE"), 'Versioned assetcache ontbreekt');
@@ -95,8 +116,8 @@ assert(!/(password|api[_ -]?key|secret|token)\s*[:=]\s*['"][^'"]{3,}/i.test(allT
 assert(!/https?:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/i.test(allText), 'Privé-IP-adres gevonden');
 
 const architecture = read('ARCHITECTURE.md');
-assert(architecture.includes('V0.4.0') && architecture.includes('Health-aggregator'), 'Architectuurdocument niet bijgewerkt voor V0.4');
-['ROADMAP.md','TESTING.md','VERSION_HISTORY.md','CONVERSATION_LOG.md','CHANGELOG-V0.4.0.md','TEST_REPORT-V0.4.0.md'].forEach((file) => assert(read(file).includes('V0.4.0'), `${file} mist V0.4.0`));
+assert(architecture.includes('V0.4.0.1') && architecture.includes('Health-aggregator') && architecture.includes('GitHub Pages-publicatie'), 'Architectuurdocument niet bijgewerkt voor V0.4.0.1');
+['ROADMAP.md','TESTING.md','VERSION_HISTORY.md','CONVERSATION_LOG.md','PUBLISHING.md','CHANGELOG-V0.4.0.1.md','TEST_REPORT-V0.4.0.1.md'].forEach((file) => assert(read(file).includes('V0.4.0.1'), `${file} mist V0.4.0.1`));
 
 if (errors.length) {
   console.error(`Validatie mislukt (${errors.length}):`);

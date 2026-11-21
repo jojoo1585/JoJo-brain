@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const RELEASE = '0.4.0';
+  const RELEASE = '0.4.0.1';
   const root = document.documentElement;
   const $ = (selector) => document.querySelector(selector);
   const esc = (value) => String(value == null ? '' : value).replace(/[&<>'"]/g, (char) => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[char]));

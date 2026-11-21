@@ -1,19 +1,29 @@
 # Conversation log — JoJo Brain
 
+## V0.4.0.1 — GitHub Pages deployment hotfix
+
+### Waarneming
+
+De echte V0.4.0 Actions-run slaagde door checkout, Node-setup, static-appvalidatie, Pages-configuratie en artifactupload. `actions/deploy-pages@v4` meldde daarna in dezelfde job `Found 0 artifact(s)` en `No artifacts named "github-pages" were found`.
+
+### Beslissing
+
+1. De Sport & Health-code van V0.4.0 blijft behouden.
+2. Upload en deployment komen in afzonderlijke jobs binnen dezelfde workflowrun.
+3. `deploy` wacht via `needs: build` op de volledige build/upload-job.
+4. De uploader wordt `actions/upload-pages-artifact@v5`.
+5. Zowel uploader als deployer gebruiken expliciet de naam `github-pages`.
+6. `npm test` blijft een harde gate vóór upload.
+7. De workflowstructuur wordt voortaan ook automatisch gevalideerd.
+
+### Resultaat
+
+V0.4.0.1 is een gerichte deploymenthotfix; er zijn geen functionele wijzigingen aan de goedgekeurde Sport & Health-experience.
+
 ## V0.4.0 — Sport & Health
 
-Beslissingen:
-
-1. JoJo wordt blok per blok volwassen gemaakt; Sport & Health is eerst.
-2. Runnix blijft de trainingsengine en krijgt Vandaag, Planning, Execution en Progressie.
-3. Garmin mag geen mini-Runnix worden. Het blijft bron voor healthsignalen en devices.
-4. Health wordt de uitbreidbare aggregator voor Sleep, HRV, Resting HR, Weight en Recovery.
-5. Strava focust op activiteiten, trends en volume. Segments is niet prominent.
-6. De architectuur wordt visueel zichtbaar via gekleurde semantische datalijnen.
-7. V0.4.0 bevat nog geen live persoonlijke data.
-8. Google- en werkagenda worden bewaard voor een latere, aparte My Day-hoofdtak.
-9. Security/self-hosting gaat vóór live data-integraties.
-
-Resultaat:
-
-V0.4.0 levert de volledige visuele en navigatiebaseline voor het eerste blok zonder Home of Development functioneel te herwerken.
+- Runnix blijft de trainingsengine met Vandaag, Planning, Execution en Progressie.
+- Garmin is bron voor healthsignalen en devices, zonder overlap met Runnix Vandaag.
+- Health aggregeert Sleep, HRV, Resting HR, Weight en Recovery.
+- Strava focust op Activities, Trends en Volume; Segments is niet prominent.
+- Live persoonlijke data en agenda-integratie blijven buiten V0.4.

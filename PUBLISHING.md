@@ -1,24 +1,35 @@
-# Publiceren — JoJo Brain V0.4.0
+# Publiceren — JoJo Brain V0.4.0.1
 
-1. Pak `JoJo-Brain-v0.4.0.zip` uit.
-2. Open in GitHub Desktop de bestaande lokale `jojo-brain` repository via **Repository → Show in Explorer**.
-3. Kopieer de volledige inhoud van de uitgepakte map naar de repositorymap en vervang de bestaande bestanden.
-4. Controleer dat je in de repository `jojo-brain` staat.
-5. Commit summary: `JoJo Brain v0.4.0 - Samsung PWA bootstrap hotfix`.
-6. Klik **Commit to main** en daarna **Push origin**.
-7. Controleer onder **Actions** dat validatie en Pages-deployment groen worden.
-8. Open de Pages-site opnieuw.
+## Bestanden plaatsen
 
-## Cache na update
+1. Pak `JoJo-Brain-v0.4.0.1-Pages-Hotfix.zip` uit.
+2. Open de bestaande lokale `jojo-brain` repository.
+3. Kopieer de **volledige inhoud** van de uitgepakte map naar de repositoryroot en vervang de bestaande bestanden.
+4. Controleer vooral dat `.github/workflows/deploy-pages.yml` is vervangen.
+5. Commit bijvoorbeeld met: `Fix JoJo v0.4 Pages artifact deployment`.
+6. Push naar `main`.
 
-V0.4.0 gebruikt een nieuwe cachekey en release-versioned assets. Laat de Pages-deployment eerst groen worden, open daarna de bestaande geïnstalleerde app online en laat de eenmalige update/reload voltooien. Verwijderen of opnieuw installeren is niet nodig.
+## Verwachte Actions-run
 
-## Installeren
+De workflow toont nu twee jobs:
 
-- Android/Chrome: **App installeren** of **Toevoegen aan startscherm**.
-- iPhone/Safari: **Deel → Zet op beginscherm**.
+1. **Validate and upload Pages artifact**
+   - Checkout
+   - Set up Node.js
+   - Validate static app
+   - Configure Pages
+   - Upload GitHub Pages artifact
+2. **Deploy to GitHub Pages**
+   - start pas nadat job 1 volledig klaar is;
+   - deployt exact artifact `github-pages`.
 
+Beide jobs moeten groen zijn. Start niet handmatig een tweede run terwijl de eerste nog loopt; de concurrencygroep `pages` beheert dit.
 
-## Bestaande geïnstalleerde PWA
+## Na groene deployment
 
-Niet verwijderen. Open de bestaande JoJo-app online na de groene Pages-deployment. De nieuwe service worker activeert en herlaadt de app maximaal één keer. Daarna moet V0.4.0 zichtbaar zijn en de graph onmiddellijk initialiseren.
+1. Open de Pages-site online.
+2. Controleer dat de header **V0.4.0.1** toont.
+3. Open Sport & Health en controleer Runnix, Garmin, Strava en Health.
+4. Open daarna de bestaande geïnstalleerde PWA online zodat de nieuwe service worker activeert.
+
+Opnieuw installeren is normaal niet nodig. De vorige V0.3.0.1-site blijft actief totdat deze workflow succesvol deployt.

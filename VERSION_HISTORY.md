@@ -1,5 +1,13 @@
 # Version history — JoJo Brain
 
+## V0.4.0.1 — GitHub Pages deployment hotfix
+
+- Pages-upload en deployment opgesplitst in afhankelijke jobs.
+- Expliciete `github-pages` artifactnaam aan beide kanten.
+- Uploader bijgewerkt naar `actions/upload-pages-artifact@v5`.
+- Workflowregressietests toegevoegd.
+- Geen functionele Sport & Health-wijzigingen.
+
 ## V0.4.0 — Sport & Health Constellation
 
 - Eerste volwassen inhoudelijke JoJo-blok.

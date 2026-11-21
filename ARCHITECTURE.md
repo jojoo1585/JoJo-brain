@@ -1,11 +1,13 @@
-# Architecture — JoJo Brain V0.4.0
+# Architecture — JoJo Brain V0.4.0.1
 
 **Status:** Sport & Health-baseline  
 **Laatst bijgewerkt:** 21 november 2026
 
 ## 1. Doel en grens
 
-JoJo Brain is in V0.4.0 een publieke, statische navigatie-PWA. De app visualiseert relaties tussen systemen, maar bewaart geen accountdata, trainingsbestanden of persoonlijke healthwaarden en voert geen private integraties uit.
+JoJo Brain is in V0.4.0.1 een publieke, statische navigatie-PWA. De app visualiseert relaties tussen systemen, maar bewaart geen accountdata, trainingsbestanden of persoonlijke healthwaarden en voert geen private integraties uit.
+
+V0.4.0.1 wijzigt de Sport & Health-runtime niet. De hotfix wijzigt uitsluitend de publicatiearchitectuur.
 
 ## 2. Conceptuele hiërarchie
 
@@ -96,3 +98,12 @@ Release-versioned app-shell, network-first navigatie, cached fallback en onmidde
 ## 7. Security- en privacygrens
 
 De publieke build bevat geen lokale infrastructuuradressen, persoonsgegevens, trainingsbestanden, OAuth-secrets of API-tokens. Live data en authenticatie horen in V0.5 bij een aparte veilige backend/self-hosted laag.
+
+## 8. GitHub Pages-publicatie
+
+De workflow gebruikt twee jobs binnen één workflowrun:
+
+1. `build` checkt uit, configureert Node 20, voert `npm test` uit, configureert Pages en uploadt een Pages-compatibel artifact met de expliciete naam `github-pages`.
+2. `deploy` heeft `needs: build`, gebruikt environment `github-pages` en deployt expliciet `artifact_name: github-pages`.
+
+De jobscheiding voorkomt een artifactmetadata-race tussen finalisatie en onmiddellijke lookup. De uploader maakt de vereiste gzip/tar-structuur; JoJo bouwt dat archief niet zelf.

@@ -1,8 +1,8 @@
 {
   "name": "jojo-brain",
-  "version": "0.4.0",
+  "version": "0.4.0.1",
   "private": true,
-  "description": "JoJo Brain V0.4.0 — mobile-first Sport & Health constellation",
+  "description": "JoJo Brain V0.4.0.1 — mobile-first Sport & Health constellation",
   "scripts": {
     "test": "node tests/validate.mjs",
     "serve": "python3 -m http.server 8080"
