@@ -1,5 +1,9 @@
 # Changelog — JoJo Brain
 
+## V0.4.0.2 — Gesture + Runnix read-only foundation
+
+Zie `CHANGELOG-V0.4.0.2.md`.
+
 ## V0.4.0.1 — GitHub Pages deployment hotfix
 
 Zie `CHANGELOG-V0.4.0.1.md`.

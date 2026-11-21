@@ -1,53 +1,57 @@
-# JoJo Brain V0.4.0.1 — Sport & Health Constellation
+# JoJo Brain V0.4.0.2 — Sport & Health
 
-JoJo Brain is een mobile-first persoonlijke navigatie-PWA. V0.4.0.1 behoudt het volledige **Sport & Health**-blok van V0.4.0 en herstelt de GitHub Pages-publicatie.
+JoJo Brain is een mobile-first persoonlijke navigatie-PWA. V0.4.0.2 behoudt de V0.4-constellatie en voegt twee gerichte verbeteringen toe: correcte tap-versus-draginteractie en de eerste veilige Runnix read-only adapterlaag.
 
-## Deployment hotfix
+Visueel gebruikt JoJo nu dezelfde product-family foundation als Runnix: near-black/dark navy, blue-violet-magenta/rose, selectief cyan, lichte typografie en rustige cardborders. JoJo blijft daarbij spatial en neural.
 
-De Pages-workflow valideert en uploadt nu in een afzonderlijke `build`-job. De afhankelijke `deploy`-job ontvangt daarna exact één artifact met naam `github-pages`. Dit voorkomt dat deployment de artifactlookup uitvoert terwijl de uploadmetadata nog niet zichtbaar is.
+## Interactie
 
-## Sport & Health
+- mouse en touch gebruiken dezelfde 6 px bewegingsdrempel;
+- draggen behoudt spring- en connected-nodephysics;
+- loslaten na drag opent nooit de drawer/bottom sheet;
+- alleen een genuine tap focust of opent een node.
 
-- **Runnix** — trainingsengine met Vandaag, Planning, Execution en Progressie.
-- **Garmin** — bron voor healthsignalen en devices; geen duplicatie van Runnix Vandaag.
-- **Strava** — Activities, Trends en Volume; Segments staat niet prominent.
-- **Health** — uitbreidbare aggregator voor Sleep, HRV, Resting HR, Weight en Recovery.
+## Runnix preview
 
-De bewegende datalijnen leggen de rollen uit:
+Sport & Health toont een compacte Runnix read-only preview. Op de publieke Pages-site is de status bewust:
 
-```text
-Garmin ──health signals──> Health ──recovery context──> Runnix
-Strava ──activity check───────────────────────────────> Runnix
-```
+**Local-only · veilige bron niet verbonden**
 
-## Privacygrens
+Er staat geen NAS-URL, token of private endpoint in de repository. De adapter doet pas een request wanneer een toekomstige beveiligde/self-hosted JoJo een same-origin read-only bridge configureert. Zonder bridge wordt geen training of metric verzonnen.
 
-V0.4.0.1 toont een architectuur en navigatie, geen persoonlijke data. Er worden geen Garmin-, Strava-, Runnix- of healthwaarden opgehaald. TCX blijft in Runnix op de NAS. Voeg nooit tokens, wachtwoorden, private netwerkadressen of persoonsgegevens toe aan de publieke repository.
+De adapter accepteert alleen beperkte trainingscontext:
 
-## Gebruiken
+- Vandaag;
+- laatste uitvoering;
+- progressie.
 
-- Tik/klik op een node om te focussen of details te openen.
-- Sleep nodes om de springfysica te voelen.
-- Gebruik Terug, breadcrumbs of JoJo om omhoog te navigeren.
-- Op mobiel opent detailinformatie als bottom sheet.
+Garmin-healthdata, persoonlijke healthwaarden en trainingbestanden horen niet in deze preview.
 
-## Lokaal uitvoeren
+## Canonical site
+
+`https://jojo1585.github.io/jojo-brain/`
+
+Gebruik deze volledige URL, inclusief repositorypad en afsluitende slash.
+
+## Niet in V0.4.0.2
+
+- live Garmin, Strava of Health;
+- Google Calendar;
+- live Home of Development;
+- directe browsertoegang tot Runnix/NAS;
+- secrets of persoonsgegevens.
+
+## Lokaal
 
 ```bash
 npm run serve
-```
-
-Open `http://localhost:8080`.
-
-## Testen
-
-```bash
 npm test
 ```
 
-Zie `TESTING.md`, `TEST_REPORT-V0.4.0.md` en `TEST_REPORT-V0.4.0.1.md`.
+Browserregressie met een beschikbare Playwright/Chromium-installatie:
 
-## Volgende blokken
+```bash
+JOJO_CHROMIUM_PATH=/pad/naar/chrome npm run test:browser
+```
 
-- **V0.5:** private/self-hosted securitylaag en een eerste read-only Runnix-koppeling.
-- **V0.6:** My Day met privé- en werkagenda in één tijdlijn.
+Zie `ARCHITECTURE.md`, `ENGINE.md`, `TESTING.md` en `TEST_REPORT-V0.4.0.2.md`.

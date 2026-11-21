@@ -1,109 +1,125 @@
-# Architecture — JoJo Brain V0.4.0.1
+# Architecture — JoJo Brain V0.4.0.2
 
-**Status:** Sport & Health-baseline  
+**Status:** Sport & Health met veilige Runnix read-only foundation  
 **Laatst bijgewerkt:** 21 november 2026
 
 ## 1. Doel en grens
 
-JoJo Brain is in V0.4.0.1 een publieke, statische navigatie-PWA. De app visualiseert relaties tussen systemen, maar bewaart geen accountdata, trainingsbestanden of persoonlijke healthwaarden en voert geen private integraties uit.
+JoJo Brain blijft een publieke statische navigatie-PWA. V0.4.0.2 voegt geen private integratie toe, maar introduceert wel het contract waarmee een latere beveiligde/self-hosted JoJo een kleine read-only Runnix-preview kan leveren.
 
-V0.4.0.1 wijzigt de Sport & Health-runtime niet. De hotfix wijzigt uitsluitend de publicatiearchitectuur.
+De publieke build bevat geen NAS-URL, credentials, tokens, private IP-adressen, trainingbestanden of persoonlijke healthwaarden.
 
-## 2. Conceptuele hiërarchie
+## 2. Sport & Health
 
 ```text
-JoJo
-├── Sport & Health
-│   ├── Runnix
-│   │   ├── Vandaag
-│   │   ├── Planning
-│   │   ├── Execution
-│   │   └── Progressie
-│   ├── Garmin
-│   │   ├── Health signals
-│   │   └── Devices
-│   ├── Strava
-│   │   ├── Activities
-│   │   ├── Trends
-│   │   └── Volume
-│   └── Health (Health-aggregator)
-│       ├── Sleep
-│       ├── HRV
-│       ├── Resting HR
-│       ├── Weight
-│       └── Recovery
-├── Home (ongewijzigd)
-└── Development (ongewijzigd)
+Sport & Health
+├── Runnix — training intelligence + read-only previewstatus
+│   ├── Vandaag
+│   ├── Planning
+│   ├── Execution
+│   └── Progressie
+├── Garmin — bronrol, geen live data in V0.4.0.2
+├── Strava — externe rol, geen live data in V0.4.0.2
+└── Health — aggregatorconcept, geen live data in V0.4.0.2
 ```
 
-## 3. Semantische datalijnen
+Alle V0.4-visuals, kleuren, semantische lijnen en springphysics blijven bestaan.
 
-De boomstructuur bepaalt navigatie. `connections` in `graph-data.js` voegen betekenisvolle, niet-hiërarchische relaties toe:
+### Product-family theme
 
-- Garmin → Health: health signals;
-- Health → Runnix: recovery context;
-- Strava → Runnix: activity check;
-- Vandaag → Execution → Progressie → Planning: Runnix closed loop.
+JoJo behoudt zijn spatial/neural compositie, maar gebruikt Runnix als palette foundation:
 
-Een verbinding wordt alleen getekend wanneer beide eindpunten zichtbaar zijn. De engine kent de betekenis niet; label en kleur komen uit het datamodel.
+- surfaces: near-black en dark navy;
+- intelligence: magenta/rose;
+- planning/context: violet en blue;
+- data/health signal: selectief cyan/teal;
+- typography: hoog contrast licht met rustige muted labels;
+- cards: compacte borders, kleine radii en restrained glow.
 
-## 4. Runtime-lagen
+Garmin blijft subtiel blue, Health cyan/teal en Strava gedempt rose/coral. Daardoor blijven bronnen herkenbaar zonder een brede rainbowpalette. Home en Development krijgen alleen dezelfde globale basis- en typographytokens.
+
+## 3. Runtime-lagen
 
 ### App-shell — `index.html`
 
-Full-screen shell met header, breadcrumbs, graph viewport, signaalegenda, detail drawer, mobiele dock en boot-state.
+Full-screen shell met graph viewport, detail drawer, mobiele dock en een kleine Runnix-preview. De preview verschijnt alleen in de Sport & Health-focus.
 
-### Inhoudsmodel — `graph-data.js`
+### Gesture classifier — `pointer-gesture.js`
 
-Bron voor nodes, parent/children, inhoud, links en optionele semantische `connections`.
+Domeinonafhankelijke state machine voor mouse en touch:
+
+- pending onder 6 px;
+- drag vanaf 6 px maximale verplaatsing;
+- dragstatus blijft gelatcht;
+- cancel activeert nooit;
+- alleen resultaat `tap` mag een node activeren.
 
 ### Spatial engine — `neural-engine.js`
 
-- canvas voor particles, glow, verbindingen, semantische labels en signaalpulsen;
-- toegankelijke DOM-buttons voor nodes;
-- springfysica, lokale repulsie, damping en grenzen;
-- desktopcontext: zusterhubs blijven gedimd zichtbaar;
-- mobiel: kleinere directe subgraph om overlap te beperken;
-- adaptief particle-budget en device-pixel-ratio.
+Start physics-dragging pas zodra de gestureclassifier `dragging` meldt. Bij release wordt `endDrag()` uitgevoerd en neemt target-attractie de node opnieuw over. Een drag roept geen selectie- of detailcallback aan.
+
+### Runnix-adapter — `runnix-adapter.js`
+
+De adapter is de enige runtimegrens naar Runnix:
+
+```text
+Runnix/self-hosted backend
+        │
+        │ same-origin GET, read-only, no-store
+        ▼
+/api/.../preview bridge
+        │
+        ▼
+runnix-adapter.js
+        │ sanitize + bounded contract
+        ▼
+Runnix preview UI
+```
+
+Publieke V0.4.0.2-configuratie:
+
+- `mode: local-only`;
+- `previewEndpoint: ''`;
+- geen request en geen gefabriceerde data.
+
+Een toekomstige endpoint moet same-origin zijn. De adapter verwerkt uitsluitend:
+
+- `today`: titel/type/duur;
+- `lastExecution`: label/status;
+- `progress`: label/aantal voltooide sessies.
+
+Onbekende velden, inclusief Garmin-specifieke healthdata, worden niet gerenderd. Authenticatie en endpointpublicatie zijn verantwoordelijkheden van de latere beveiligde host, niet van GitHub Pages.
 
 ### Orchestratie — `app.js`
 
-Beheert clusterfocus, geschiedenis, breadcrumbs, detail drawer, online/offline-indicatie, installatie en service-workerupdates.
+Bindt graphnavigatie, PWA, detail drawer en Runnix-adapter. Disconnected/unavailable states blijven expliciet en bevatten geen fallbackmetrics.
 
 ### Configuratie — `config.js`
 
-Publieke URL-configuratie. Lokale en private adressen blijven leeg. Er is geen token- of credentialmodel.
+Bevat publieke links, canonical Pages-metadata en een lege Runnix-bronconfiguratie. Secrets en private routes zijn verboden.
 
-### PWA — manifest en service worker
+## 4. GitHub Pages-publicatie
 
-Release-versioned app-shell, network-first navigatie, cached fallback en onmiddellijke upgrade zonder reinstall.
+Canonical URL:
 
-## 5. Rollen in Sport & Health
+`https://jojo1585.github.io/jojo-brain/`
 
-- Runnix interpreteert en adviseert.
-- Garmin levert brondata en devicecontext.
-- Health aggregeert brononafhankelijke lichamelijke context.
-- Strava geeft een onafhankelijke activiteit- en volumeblik.
-- JoJo orkestreert navigatie en visualiseert relaties; JoJo is geen tweede trainingsengine.
+De bestaande workflowstructuur blijft:
 
-## 6. Performance en toegankelijkheid
+1. `build`: checkout → Node 20 → `npm test` → Configure Pages → stage `_site` → upload `github-pages`;
+2. `deploy`: `needs: build` → deploy exact `github-pages`.
 
-- geen externe visualisatie- of physicslibrary;
-- maximaal 1.25 DPR mobiel en 1.6 desktop;
-- 32 particles mobiel, 62 desktop en 18 bij reduced motion;
-- semantische lijnlabels alleen op desktop;
-- `prefers-reduced-motion` blijft ondersteund;
-- nodes blijven echte buttons met toetsenbordbediening.
+De expliciete `_site`-staging maakt de artifactroot gelijk aan de repositorysite-root. `index.html`, `404.html`, `.nojekyll`, PWA-runtime en assets worden gecontroleerd vóór upload. `404.html` herstelt een onbekend repositorypad naar de canonical root.
 
-## 7. Security- en privacygrens
+## 5. PWA
 
-De publieke build bevat geen lokale infrastructuuradressen, persoonsgegevens, trainingsbestanden, OAuth-secrets of API-tokens. Live data en authenticatie horen in V0.5 bij een aparte veilige backend/self-hosted laag.
+Manifest `start_url` en `scope` blijven `./`, zodat installatie onder het repositorypad werkt. Alle runtimebestanden dragen releaseversie V0.4.0.2 en zitten in de service-worker app-shell.
 
-## 8. GitHub Pages-publicatie
+## 6. Security- en privacygrens
 
-De workflow gebruikt twee jobs binnen één workflowrun:
-
-1. `build` checkt uit, configureert Node 20, voert `npm test` uit, configureert Pages en uploadt een Pages-compatibel artifact met de expliciete naam `github-pages`.
-2. `deploy` heeft `needs: build`, gebruikt environment `github-pages` en deployt expliciet `artifact_name: github-pages`.
-
-De jobscheiding voorkomt een artifactmetadata-race tussen finalisatie en onmiddellijke lookup. De uploader maakt de vereiste gzip/tar-structuur; JoJo bouwt dat archief niet zelf.
+- geen rechtstreekse browsercall naar NAS of private host;
+- geen cross-origin Runnix-endpoint;
+- geen bearer token, API-key, cookiecode of client secret;
+- geen TCX/FIT/GPX-bestanden;
+- geen Garmin-, Strava-, Health-, Calendar-, Home- of Development-data;
+- geen persoonlijke waarden als demo of fallback.

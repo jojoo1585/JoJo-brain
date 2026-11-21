@@ -1,58 +1,76 @@
-# Neural Engine — V0.4.0.1
+# Neural Engine — V0.4.0.2
 
 ## Verantwoordelijkheid
 
-`neural-engine.js` visualiseert een kleine zichtbare subgraph en behandelt physics, pointerdragging en canvasrendering. De engine bevat geen domeinlogica en opent zelf geen externe links.
+`neural-engine.js` visualiseert de zichtbare subgraph en behandelt physics, nodepositionering en canvasrendering. `pointer-gesture.js` bepaalt onafhankelijk of input een tap, drag of cancel is.
 
-## Zichtbare subgraph
-
-Voor focusnode `F`:
+## Pointer lifecycle
 
 ```text
-visible = path(JoJo → F) + directChildren(F)
+pointerdown
+   │
+   ▼
+pending ── beweging < 6 px ──> pending
+   │
+   ├── pointerup ─────────────> tap → activate/focus
+   │
+   └── max distance ≥ 6 px ──> drag (latched)
+                                  │
+                                  └── pointerup → endDrag, geen detail
 ```
 
-Daardoor blijft de graph leesbaar en het rekenwerk begrensd, terwijl JoJo als oorsprong zichtbaar blijft.
+De maximale afstand sinds pointerdown bepaalt de classificatie. Terugbewegen naar het startpunt maakt een drag dus niet opnieuw tot tap. Mouse en touch gebruiken exact hetzelfde contract. `pointercancel` eindigt zonder activatie.
+
+## Physics tijdens drag
+
+Physics-dragging start pas na het overschrijden van de drempel. De gesleepte node wordt tijdelijk `fixed`; edge springs blijven verbonden nodes beïnvloeden. Bij release:
+
+1. `endDrag()` verwijdert `fixed`;
+2. een deel van de pointervelocity blijft behouden;
+3. damping en target-attractie brengen de layout terug;
+4. geen detail- of selectiecallback wordt uitgevoerd.
+
+Daarmee blijft het V0.4 springgedrag behouden zonder ongewenste bottom sheet.
 
 ## Simulatiestap
 
-- target-attractie naar een responsieve clusterlayout;
+- target-attractie naar responsieve clustertargets;
 - springcorrectie langs zichtbare edges;
-- repulsie binnen een beperkte afstand;
+- lokale repulsie;
 - velocity damping;
 - viewport-boundaries;
-- optionele sinusvormige micro-float.
-
-Slepen zet de node tijdelijk vast. Omdat de springberekening blijft lopen, reageren gekoppelde nodes fysiek. Bij loslaten krijgt de node opnieuw target-attractie.
+- optionele micro-float.
 
 ## Rendering
 
-- canvas: achtergrondparticles, focusglow, curved edges en pulse dots;
-- DOM: nodecards en toegankelijke labels;
-- CSS: halos, focusstijl en focusovergang.
+- canvas: particles, focusglow, curved edges en pulse dots;
+- DOM: toegankelijke nodebuttons;
+- CSS: halos, focusstijl en clustertransities;
+- Runnix-preview staat buiten de physicslaag en onderschept geen pointerinput.
+
+### Runnix-family theme
+
+Canvas en DOM delen één begrensde palette:
+
+- `#07080d` / `#0c0f17` voor achtergrond en cards;
+- blue `#3b82f6`, violet `#8b5cf6`, magenta/rose `#f43fa6` voor productintelligence;
+- cyan `#2dd4bf` voor signalen en healthcontext;
+- sourcevarianten blijven binnen blue/cyan/rose in plaats van losstaande regenboogkleuren.
+
+De canvas-RGB-waarden zijn gelijk aan de CSS-tokens. Glow blijft decoratief en laag in opacity; leesbaarheid komt uit bordercontrast en lichte typografie.
 
 ## Adaptatie
 
-| Modus | DPR-cap | Particles | Micro-float |
-|---|---:|---:|---:|
-| Desktop | 1.6 | 62 | ja |
-| Phone | 1.25 | 32 | ja |
-| Reduced motion | apparaatcap | 18 | nee |
+| Modus | DPR-cap | Particles | Gesture |
+|---|---:|---:|---|
+| Desktop | 1.6 | 62 | Pointer/mouse, 6 px |
+| Phone/PWA | 1.25 | 32 | Pointer/touch, 6 px |
+| Reduced motion | apparaatcap | 18 | zelfde classificatie |
 
-## Niet-doelen
+## Compatibility boundary
 
-- geen algemene graph-editor;
-- geen persistente nodeposities;
-- geen 3D/WebGL;
-- geen externe physicsdependency;
-- geen integratiedata of accountstatus.
-
-## V0.4.0.1 compatibility boundary
-
-De physicsformules zijn niet gewijzigd. De hotfix maakt alleen de runtime-initialisatie tolerant:
-
-- `ResizeObserver` is optioneel;
-- `visualViewport` wordt gebruikt indien beschikbaar;
-- canvascontext valt terug op een standaard 2D-context;
-- node-elementen worden rechtstreeks in een `Map` bewaard;
-- graphhoogte volgt de echte standalone viewport zonder kunstmatige minimumhoogte.
+- `ResizeObserver` blijft optioneel;
+- `visualViewport` blijft leidend in standalone PWA;
+- pointer capture wordt per gesture gebruikt;
+- toetsenbord Enter/Spatie activeert rechtstreeks en wordt niet als drag behandeld;
+- de engine bevat geen Runnix- of andere domeindata.

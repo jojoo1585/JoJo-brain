@@ -1,76 +1,88 @@
-# Testing — JoJo Brain V0.4.0.1
+# Testing — JoJo Brain V0.4.0.2
 
-## Geautomatiseerd
+## Standaardvalidatie
 
 ```bash
 npm test
 ```
 
-De validatie controleert:
+Dit voert static releasevalidatie en pure regressietests uit.
 
-- bestanden, releaseversies en versioned assets;
-- manifest, icons en service worker;
-- graphhiërarchie en semantische datalijnen;
-- goedgekeurde Sport & Health-rollen;
-- Garmin zonder Runnix-overlap;
-- Strava zonder prominente Segments-node;
-- Health-aggregator met vijf signalen;
-- privacyregels en afwezigheid van private IP-adressen;
-- performance- en compatibilityguards.
-- de Pages-workflow met afzonderlijke build- en deployjobs;
-- `needs: build` als artifactfinalisatiebarrière;
-- uploader `actions/upload-pages-artifact@v5` met naam `github-pages`;
-- deployer `actions/deploy-pages@v4` met dezelfde artifactnaam.
+### Pointer mouse/touch
 
-## Syntax
+- drempel exact 6 px;
+- 5,66 px blijft tap;
+- 6 px wordt drag;
+- drag blijft gelatcht na terugbewegen;
+- cancel activeert nooit;
+- engine activeert alleen bij resultaat `tap`;
+- drag voert `endDrag()` uit zonder detailcallback.
+
+### Runnix-adapter
+
+- lege endpoint geeft `local-only/disconnected`;
+- local-only bevat geen preview;
+- cross-origin endpoint wordt geweigerd;
+- same-origin endpoint wordt geaccepteerd;
+- fetch is GET, same-origin en no-store;
+- bounded contract: Vandaag, laatste uitvoering, progressie;
+- Garmin-healthvelden verschijnen niet in output.
+
+### Pages en PWA
+
+- canonical URL: `https://jojo1585.github.io/jojo-brain/`;
+- basepath: `/jojo-brain/`;
+- manifest start/scope relatief;
+- `404.html` herstelt naar canonical root;
+- workflow behoudt `build` + `deploy` en `needs: build`;
+- `_site` bevat index, 404, `.nojekyll` en runtimeassets;
+- artifact heet exact `github-pages`;
+- service worker bevat pointer- en Runnix-adapter.
+
+### Visual regression
+
+- globale surface-, text- en accenttokens exact gecontroleerd;
+- canvas-RGB en CSS-palette blijven uitgelijnd;
+- Runnix-node en preview bevatten de gedeelde accentrail;
+- preview is zichtbaar in Sport & Health en toont `LOCAL-ONLY`;
+- desktop- en mobile-baselines worden geschreven naar `tests/reports/V0.4.0.2-*.png`;
+- Garmin/Health/Strava blijven binnen blue/cyan/rose sourcevarianten;
+- Home en Development krijgen geen eigen structurele restyle.
+
+### Leakage
+
+Alle tekstbestanden worden gecontroleerd op:
+
+- credentialassignments;
+- private IPv4-URL's;
+- geconfigureerde publieke Runnix-endpoint;
+- trainingbestanden in repository;
+- ontbrekende releaseversies.
+
+## Browserregressie
 
 ```bash
-node --check app.js
-node --check graph-data.js
-node --check neural-engine.js
-node --check service-worker.js
+JOJO_CHROMIUM_PATH=/pad/naar/chrome npm run test:browser
 ```
 
-## Pages-workflow
+Test desktop mouse en mobile touch in een echte browser:
 
-De workflowtest leest `.github/workflows/deploy-pages.yml` en controleert de contractpunten tussen upload en deployment. Externe acceptatie gebeurt na push naar `main`:
+1. drag Runnix 24 px;
+2. hash blijft `#sport-health`;
+3. drawer blijft gesloten;
+4. genuine tap van 2 px focust `#runnix`;
+5. geen page errors.
 
-1. job **Validate and upload Pages artifact** is groen;
-2. de run bevat exact het artifact `github-pages`;
-3. job **Deploy to GitHub Pages** start pas na de buildjob;
-4. de deployment-URL opent V0.4.0.1.
+## Handmatige doeltoesteltest
 
-## Handmatige matrix
+1. Push en wacht op twee groene Pages-jobs.
+2. Open `https://jojo1585.github.io/jojo-brain/`.
+3. Bevestig V0.4.0.2 en `LOCAL-ONLY` Runnix-preview.
+4. Sleep elke Sport & Health-node; geen bottom sheet mag openen.
+5. Tik Runnix; cluster moet focussen.
+6. Tik de gefocuste Runnix-core; detailpaneel mag nu openen.
+7. Open de geïnstalleerde PWA online en laat de service-workerupdate voltooien.
+8. Herhaal drag/tap met touch.
+9. Test daarna offline startup.
 
-### Mobiel portrait
-
-- JoJo → Sport & Health;
-- vier hoofdhubs leesbaar;
-- Runnix met vier routes;
-- Garmin met twee bronroutes;
-- Strava met drie routes zonder Segments;
-- Health met vijf signalen zonder onbruikbare overlap;
-- drawer opent en sluit boven de dock;
-- node sleep en tap blijven onderscheidbaar.
-
-### Mobiel landscape
-
-- visual viewport blijft correct;
-- topbar, dock en focusnode blijven bereikbaar;
-- geen scrollbars of afgesneden nodes.
-
-### Desktop
-
-- signaalegenda verschijnt alleen bij Sport & Health;
-- semantische datalijnlabels zijn leesbaar;
-- zusterhubs blijven gedimd zichtbaar bij hubfocus;
-- toetsenbord: Tab, Enter, Spatie, Escape en Home.
-
-### PWA
-
-- update vanuit V0.3.0.1 zonder reinstall;
-- cache bevat V0.4.0.1-assets;
-- offline app-shell start;
-- reduced motion verwijdert decoratieve animatie.
-
-Zie `TEST_REPORT-V0.4.0.md` voor de applicatiebaseline en `TEST_REPORT-V0.4.0.1.md` voor de deploymenthotfix.
+Zie `TEST_REPORT-V0.4.0.2.md`.

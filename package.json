@@ -1,10 +1,11 @@
 {
   "name": "jojo-brain",
-  "version": "0.4.0.1",
+  "version": "0.4.0.2",
   "private": true,
-  "description": "JoJo Brain V0.4.0.1 — mobile-first Sport & Health constellation",
+  "description": "JoJo Brain V0.4.0.2 — precise pointer gestures and safe Runnix read-only foundation",
   "scripts": {
-    "test": "node tests/validate.mjs",
+    "test": "node tests/validate.mjs && node tests/interaction.test.mjs",
+    "test:browser": "python3 tests/browser_regression.py",
     "serve": "python3 -m http.server 8080"
   },
   "engines": {

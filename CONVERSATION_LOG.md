@@ -1,29 +1,45 @@
 # Conversation log — JoJo Brain
 
-## V0.4.0.1 — GitHub Pages deployment hotfix
+## V0.4.0.2 — Interaction + Runnix read-only foundation
 
-### Waarneming
+### Vraag
 
-De echte V0.4.0 Actions-run slaagde door checkout, Node-setup, static-appvalidatie, Pages-configuratie en artifactupload. `actions/deploy-pages@v4` meldde daarna in dezelfde job `Found 0 artifact(s)` en `No artifacts named "github-pages" were found`.
+1. Draggen en loslaten mag het detailpaneel nooit openen.
+2. Begin echte data-integratie uitsluitend met Runnix.
+3. Publiceer geen private infrastructuur of persoonlijke data.
+4. Maak het GitHub Pages-repositorypad robuust en documenteer de canonical URL.
+5. Breng JoJo visueel dichter bij Runnix zonder het spatial/neural karakter te verliezen.
 
-### Beslissing
+### Beslissingen
 
-1. De Sport & Health-code van V0.4.0 blijft behouden.
-2. Upload en deployment komen in afzonderlijke jobs binnen dezelfde workflowrun.
-3. `deploy` wacht via `needs: build` op de volledige build/upload-job.
-4. De uploader wordt `actions/upload-pages-artifact@v5`.
-5. Zowel uploader als deployer gebruiken expliciet de naam `github-pages`.
-6. `npm test` blijft een harde gate vóór upload.
-7. De workflowstructuur wordt voortaan ook automatisch gevalideerd.
+- Eén gestureclassifier voor desktop mouse en mobile touch.
+- Drempel van 6 px; dragstatus blijft gelatcht.
+- Physics start pas na de drempel en blijft verder ongewijzigd.
+- Alleen genuine tap activeert een node.
+- Runnix wordt de eerste en enige adapterbron.
+- De publieke build heeft geen endpoint en toont daarom `Local-only`.
+- Een toekomstige integratie mag alleen via een same-origin read-only bridge lopen.
+- Alleen Vandaag, laatste uitvoering en progressie horen in de compacte preview.
+- Garmin-specifieke healthdata horen niet in de Runnix-preview.
+- Geen live Garmin, Strava, Health, Calendar, Home of Development in deze release.
+- Canonical Pages-URL is `https://jojo1585.github.io/jojo-brain/`.
+- De succesvolle twee-jobs Pages-flow blijft behouden; `_site` maakt de artifactroot expliciet.
+- Runnix bepaalt de near-black, blue-violet-magenta/rose en selectieve cyan palette foundation.
+- Runnix-node en read-only preview krijgen herkenbare card-, border- en accentrail-styling.
+- Garmin, Health en Strava behouden alleen subtiele blue/cyan/rose bronaccenten; een rainbow-effect wordt vermeden.
+- Home en Development wijzigen alleen via gedeelde globale thematokens.
 
 ### Resultaat
 
-V0.4.0.1 is een gerichte deploymenthotfix; er zijn geen functionele wijzigingen aan de goedgekeurde Sport & Health-experience.
+V0.4.0.2 is veilig bruikbaar als publieke PWA, lost de ongewenste dragselectie op en legt een testbare Runnix-contractgrens vast zonder te doen alsof publieke live toegang al bestaat.
+
+## V0.4.0.1 — GitHub Pages deployment hotfix
+
+- Artifactupload en deployment opgesplitst in afhankelijke jobs.
+- Expliciete artifactnaam `github-pages`.
+- Sport & Health-code ongewijzigd.
 
 ## V0.4.0 — Sport & Health
 
-- Runnix blijft de trainingsengine met Vandaag, Planning, Execution en Progressie.
-- Garmin is bron voor healthsignalen en devices, zonder overlap met Runnix Vandaag.
-- Health aggregeert Sleep, HRV, Resting HR, Weight en Recovery.
-- Strava focust op Activities, Trends en Volume; Segments is niet prominent.
-- Live persoonlijke data en agenda-integratie blijven buiten V0.4.
+- Runnix, Garmin, Strava en Health kregen onderscheiden rollen.
+- Semantische datalijnen en energy-core visuals.

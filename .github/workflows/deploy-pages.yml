@@ -33,12 +33,22 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Stage repository Pages site
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          cp index.html 404.html offline.html styles.css config.js graph-data.js pointer-gesture.js runnix-adapter.js neural-engine.js app.js manifest.webmanifest service-worker.js .nojekyll _site/
+          cp -R assets _site/assets
+          test -f _site/index.html
+          test -f _site/404.html
+          test -f _site/.nojekyll
+
       - name: Upload GitHub Pages artifact
         id: pages-artifact
         uses: actions/upload-pages-artifact@v5
         with:
           name: github-pages
-          path: .
+          path: _site
           include-hidden-files: true
 
   deploy:

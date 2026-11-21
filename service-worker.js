@@ -1,9 +1,9 @@
-const RELEASE = '0.4.0.1';
+const RELEASE = '0.4.0.2';
 const CACHE_NAME = `jojo-brain-v${RELEASE}`;
 const V = `?v=${RELEASE}`;
 const APP_SHELL = [
   './', './index.html', `./styles.css${V}`, `./config.js${V}`, `./graph-data.js${V}`,
-  `./neural-engine.js${V}`, `./app.js${V}`, `./manifest.webmanifest${V}`,
+  `./pointer-gesture.js${V}`, `./runnix-adapter.js${V}`, `./neural-engine.js${V}`, `./app.js${V}`, `./manifest.webmanifest${V}`,
   './offline.html', `./assets/icons/favicon.svg${V}`, `./assets/icons/icon-192.png${V}`,
   `./assets/icons/icon-512.png${V}`, `./assets/icons/maskable-192.png${V}`,
   `./assets/icons/maskable-512.png${V}`, `./assets/icons/apple-touch-icon.png${V}`

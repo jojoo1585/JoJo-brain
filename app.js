@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const RELEASE = '0.4.0.1';
+  const RELEASE = '0.4.0.2';
   const root = document.documentElement;
   const $ = (selector) => document.querySelector(selector);
   const esc = (value) => String(value == null ? '' : value).replace(/[&<>'"]/g, (char) => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[char]));
@@ -9,6 +9,7 @@
   let config = { links: {} };
   let currentId = 'jojo';
   let installPrompt = null;
+  let runnixAdapter = null;
 
   function markReady() {
     clearTimeout(window.__JOJO_BOOT_GUARD__);
@@ -71,6 +72,53 @@
     const node = graph[currentId];
     $('#cluster-title').innerHTML = `<small>${esc(node.eyebrow)}</small><strong>${esc(node.id === 'jojo' ? 'Alles verbonden.' : node.title)}</strong>`;
     root.dataset.cluster = node.domain.toLowerCase();
+  }
+
+  function renderRunnixPreview(state) {
+    const status = $('#runnix-preview-status');
+    const title = $('#runnix-preview-title');
+    const message = $('#runnix-preview-message');
+    const list = $('#runnix-preview-data');
+    if (!status || !title || !message || !list) return;
+    list.innerHTML = '';
+    list.hidden = true;
+
+    if (!state || !state.connected || !state.preview) {
+      status.textContent = state && state.status === 'unavailable' ? 'NIET BEREIKBAAR' : 'LOCAL-ONLY';
+      title.textContent = state && state.status === 'unavailable' ? 'Runnix preview niet beschikbaar' : 'Veilige bron niet verbonden';
+      message.textContent = state && state.status === 'unavailable'
+        ? 'De same-origin read-only bridge antwoordt niet. Er worden geen fallbackwaarden verzonnen.'
+        : 'Geen publieke Runnix- of NAS-verbinding geconfigureerd.';
+      return;
+    }
+
+    const rows = [];
+    const preview = state.preview;
+    if (preview.today) {
+      const parts = [preview.today.title || preview.today.type];
+      if (preview.today.durationMinutes !== null) parts.push(`${preview.today.durationMinutes} min`);
+      rows.push(['Vandaag', parts.filter(Boolean).join(' · ')]);
+    }
+    if (preview.lastExecution) rows.push(['Uitvoering', preview.lastExecution.label || preview.lastExecution.status]);
+    if (preview.progress) {
+      const parts = [preview.progress.label];
+      if (preview.progress.completedSessions !== null) parts.push(`${preview.progress.completedSessions} sessies`);
+      rows.push(['Progressie', parts.filter(Boolean).join(' · ')]);
+    }
+    status.textContent = 'VERBONDEN';
+    title.textContent = 'Runnix preview';
+    message.textContent = 'Beperkte trainingscontext via een same-origin read-only bridge.';
+    list.innerHTML = rows.map(([label, value]) => `<li><span>${esc(label)}</span><strong>${esc(value)}</strong></li>`).join('');
+    list.hidden = !rows.length;
+  }
+
+  function bindRunnix() {
+    const factory = window.JOJO_RUNNIX && window.JOJO_RUNNIX.createRunnixAdapter;
+    if (typeof factory !== 'function') throw new Error('Runnix adapter ontbreekt');
+    const source = config.sources && config.sources.runnix ? config.sources.runnix : {};
+    runnixAdapter = factory(source);
+    runnixAdapter.subscribe(renderRunnixPreview);
+    runnixAdapter.refresh();
   }
 
   function pushHistory(hash) {
@@ -176,10 +224,11 @@
       currentId = graph[location.hash.slice(1)] ? location.hash.slice(1) : 'jojo';
       universe = new window.NeuralUniverse({
         viewport: $('#graph-viewport'), canvas: $('#space-canvas'), layer: $('#node-layer'), data: graph,
-        onActivate: (id) => activate(id), onSelect: (id) => showDetail(id, true)
+        onActivate: (id) => activate(id)
       });
       bindUi();
       bindPwa();
+      bindRunnix();
       const reducedQuery = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
       if (reducedQuery.matches) $('#motion-mode').textContent = 'CALM';
       render(currentId, { history: false });

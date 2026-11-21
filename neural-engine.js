@@ -2,14 +2,14 @@
   'use strict';
 
   const COLORS = {
-    cyan: [53, 234, 210], magenta: [255, 47, 157], green: [101, 230, 155],
-    violet: [154, 121, 255], orange: [255, 156, 90], blue: [76, 151, 255]
+    cyan: [45, 212, 191], magenta: [244, 63, 166], green: [53, 205, 187],
+    violet: [139, 92, 246], orange: [251, 113, 133], blue: [59, 130, 246]
   };
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
   const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[c]));
 
   class NeuralUniverse {
-    constructor({ viewport, canvas, layer, data, onActivate, onSelect }) {
+    constructor({ viewport, canvas, layer, data, onActivate }) {
       this.viewport = viewport;
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d', { alpha: true, desynchronized: true }) || canvas.getContext('2d');
@@ -17,7 +17,8 @@
       this.layer = layer;
       this.data = data;
       this.onActivate = onActivate;
-      this.onSelect = onSelect;
+      this.pointerGesture = window.JOJO_POINTER_GESTURE;
+      if (!this.pointerGesture) throw new Error('Pointer gesture controller ontbreekt');
       this.nodes = new Map();
       this.nodeElements = new Map();
       this.edges = [];
@@ -205,28 +206,37 @@
       this.layer.querySelectorAll('.neural-node').forEach((element) => {
         const id = element.dataset.nodeId;
         this.nodeElements.set(id, element);
-        let startX = 0, startY = 0, moved = false;
+        let gesture = null;
         element.addEventListener('pointerdown', (event) => {
           if (event.button !== 0) return;
-          startX = event.clientX; startY = event.clientY; moved = false;
+          gesture = this.pointerGesture.begin(event);
           element.setPointerCapture(event.pointerId);
-          this.startDrag(id, event.clientX, event.clientY);
-          element.classList.add('is-dragging');
         });
         element.addEventListener('pointermove', (event) => {
-          if (!this.drag || this.drag.id !== id) return;
-          if (Math.hypot(event.clientX - startX, event.clientY - startY) > 5) moved = true;
-          this.dragTo(event.clientX, event.clientY);
+          if (!gesture || gesture.pointerId !== event.pointerId) return;
+          const wasDragging = gesture.dragging;
+          this.pointerGesture.move(gesture, event.clientX, event.clientY);
+          if (gesture.dragging && !wasDragging) {
+            this.startDrag(id, gesture.startX, gesture.startY);
+            element.classList.add('is-dragging');
+          }
+          if (gesture.dragging) this.dragTo(event.clientX, event.clientY);
         });
         const finish = (event) => {
-          if (!this.drag || this.drag.id !== id) return;
-          this.endDrag(); element.classList.remove('is-dragging');
-          if (!moved) this.onActivate?.(id);
-          else this.onSelect?.(id);
+          if (!gesture || gesture.pointerId !== event.pointerId) return;
+          const result = this.pointerGesture.finish(gesture, event.clientX, event.clientY);
+          if (this.drag && this.drag.id === id) this.endDrag();
+          element.classList.remove('is-dragging');
+          gesture = null;
+          if (result.kind === 'tap') this.onActivate?.(id);
           try { element.releasePointerCapture(event.pointerId); } catch {}
         };
         element.addEventListener('pointerup', finish);
-        element.addEventListener('pointercancel', () => { this.endDrag(); element.classList.remove('is-dragging'); });
+        element.addEventListener('pointercancel', (event) => {
+          if (gesture && gesture.pointerId === event.pointerId) this.pointerGesture.cancel(gesture);
+          if (this.drag && this.drag.id === id) this.endDrag();
+          gesture = null; element.classList.remove('is-dragging');
+        });
         element.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.onActivate?.(id); }
         });

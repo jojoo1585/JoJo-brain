@@ -1,5 +1,16 @@
 # Version history — JoJo Brain
 
+## V0.4.0.2 — Gesture + Runnix read-only foundation
+
+- Betrouwbare 6 px tap/dragclassificatie voor mouse en touch.
+- Drag opent geen detailpaneel; springphysics blijft behouden.
+- Veilige same-origin Runnix-adapter met publieke Local-only state.
+- Compacte Runnix-preview zonder Garmin-healthduplicatie.
+- Runnix-family visual alignment: dark navy, blue/violet/magenta/rose, selectief cyan en restrained glow.
+- Runnix-node en preview als herkenbare Runnix-cards binnen JoJo's neurale universum.
+- Canonical Pages-URL en repository-aware 404/path-staging.
+- Uitgebreide interaction, PWA, path en leakage-regressietests.
+
 ## V0.4.0.1 — GitHub Pages deployment hotfix
 
 - Pages-upload en deployment opgesplitst in afhankelijke jobs.

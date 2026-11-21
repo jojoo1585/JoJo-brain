@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#05070d">
+  <meta name="theme-color" content="#07080d">
   <meta name="description" content="JoJo Brain — jouw levende persoonlijke universum voor Sport & Health, Home en Development.">
   <meta name="application-name" content="JoJo Brain">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="JoJo">
+  <link rel="canonical" href="https://jojo1585.github.io/jojo-brain/">
   <script>
     /* Runs before CSS: Samsung installed PWAs need the visual viewport, not 100vh. */
     (function () {
@@ -39,10 +40,10 @@
       }, 3500);
     })();
   </script>
-  <link rel="manifest" href="manifest.webmanifest?v=0.4.0.1">
-  <link rel="icon" href="assets/icons/favicon.svg?v=0.4.0.1" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=0.4.0.1">
-  <link rel="stylesheet" href="styles.css?v=0.4.0.1">
+  <link rel="manifest" href="manifest.webmanifest?v=0.4.0.2">
+  <link rel="icon" href="assets/icons/favicon.svg?v=0.4.0.2" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=0.4.0.2">
+  <link rel="stylesheet" href="styles.css?v=0.4.0.2">
   <title>JoJo · Living Neural Universe</title>
 </head>
 <body>
@@ -65,12 +66,18 @@
         <span class="fps-mode" id="motion-mode">LIVE</span>
         <span class="connection" id="connection-status" role="status"><i></i><span>ONLINE</span></span>
         <button class="install-button" id="install-button" type="button" hidden>↓ Installeer</button>
-        <span class="version">V0.4.0.1</span>
+        <span class="version">V0.4.0.2</span>
       </div>
     </header>
 
     <section class="graph-viewport" id="graph-viewport" aria-label="Interactieve neurale kaart">
       <div class="cluster-title" id="cluster-title" aria-live="polite"><small>JOJO UNIVERSE</small><strong>Alles verbonden.</strong></div>
+      <section class="runnix-preview accent-magenta" id="runnix-preview" aria-label="Read-only Runnix preview" aria-live="polite">
+        <div class="runnix-preview-heading"><span><i></i> RUNNIX · READ-ONLY</span><em id="runnix-preview-status">LOCAL-ONLY</em></div>
+        <strong id="runnix-preview-title">Veilige bron niet verbonden</strong>
+        <p id="runnix-preview-message">Geen publieke Runnix- of NAS-verbinding geconfigureerd.</p>
+        <ul id="runnix-preview-data" hidden></ul>
+      </section>
       <div class="signal-legend" aria-label="Betekenis van de Sport & Health datalijnen">
         <span class="legend-blue"><i></i>Source</span>
         <span class="legend-green"><i></i>Context</span>
@@ -108,9 +115,11 @@
     </div>
   </main>
   <noscript><p class="noscript">JoJo heeft JavaScript nodig voor de interactieve neurale kaart.</p></noscript>
-  <script defer src="config.js?v=0.4.0.1"></script>
-  <script defer src="graph-data.js?v=0.4.0.1"></script>
-  <script defer src="neural-engine.js?v=0.4.0.1"></script>
-  <script defer src="app.js?v=0.4.0.1"></script>
+  <script defer src="config.js?v=0.4.0.2"></script>
+  <script defer src="graph-data.js?v=0.4.0.2"></script>
+  <script defer src="pointer-gesture.js?v=0.4.0.2"></script>
+  <script defer src="runnix-adapter.js?v=0.4.0.2"></script>
+  <script defer src="neural-engine.js?v=0.4.0.2"></script>
+  <script defer src="app.js?v=0.4.0.2"></script>
 </body>
 </html>

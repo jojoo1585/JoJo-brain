@@ -23,7 +23,7 @@
         { from: 'health', to: 'runnix', accent: 'green', label: 'RECOVERY CONTEXT' },
         { from: 'strava', to: 'runnix', accent: 'orange', label: 'ACTIVITY CHECK' }
       ],
-      privacy: 'V0.4 visualiseert alleen de architectuur. Er wordt nog geen persoonlijke Garmin-, Strava-, Health- of Runnix-data opgehaald.'
+      privacy: 'V0.4.0.2 toont alleen een read-only Runnix-bronstatus. Zonder veilige same-origin bridge blijft die eerlijk Local-only; Garmin-, Strava- en Health-data worden niet opgehaald.'
     }),
 
     runnix: n('runnix', {

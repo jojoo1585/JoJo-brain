@@ -1,35 +1,41 @@
-# Publiceren — JoJo Brain V0.4.0.1
+# Publiceren — JoJo Brain V0.4.0.2
 
-## Bestanden plaatsen
+## Canonical URL
 
-1. Pak `JoJo-Brain-v0.4.0.1-Pages-Hotfix.zip` uit.
-2. Open de bestaande lokale `jojo-brain` repository.
-3. Kopieer de **volledige inhoud** van de uitgepakte map naar de repositoryroot en vervang de bestaande bestanden.
-4. Controleer vooral dat `.github/workflows/deploy-pages.yml` is vervangen.
-5. Commit bijvoorbeeld met: `Fix JoJo v0.4 Pages artifact deployment`.
-6. Push naar `main`.
+`https://jojo1585.github.io/jojo-brain/`
 
-## Verwachte Actions-run
+De repositorynaam wordt in de publieke URL als lowercase `jojo-brain` gebruikt. Gebruik de afsluitende slash.
 
-De workflow toont nu twee jobs:
+## Plaatsen
+
+1. Pak `JoJo-Brain-v0.4.0.2-Sport-Health.zip` uit.
+2. Kopieer de **volledige inhoud** van `JoJo-Brain-v0.4.0.2` naar de root van de bestaande repository.
+3. Vervang ook `.github/workflows/deploy-pages.yml`.
+4. Commit bijvoorbeeld: `JoJo v0.4.0.2 gestures and Runnix adapter`.
+5. Push naar `main`.
+
+## Verwachte workflow
 
 1. **Validate and upload Pages artifact**
-   - Checkout
-   - Set up Node.js
-   - Validate static app
-   - Configure Pages
-   - Upload GitHub Pages artifact
+   - checkout;
+   - Node 20;
+   - `npm test`;
+   - Configure Pages;
+   - stage site in `_site`;
+   - upload exact artifact `github-pages`.
 2. **Deploy to GitHub Pages**
-   - start pas nadat job 1 volledig klaar is;
-   - deployt exact artifact `github-pages`.
+   - start na `needs: build`;
+   - deployt artifact `github-pages`.
 
-Beide jobs moeten groen zijn. Start niet handmatig een tweede run terwijl de eerste nog loopt; de concurrencygroep `pages` beheert dit.
+Beide jobs moeten groen zijn. De `_site`-root bevat de app-shell direct op artifactniveau, dus niet in een extra projectmap.
 
-## Na groene deployment
+## Na deployment
 
-1. Open de Pages-site online.
-2. Controleer dat de header **V0.4.0.1** toont.
-3. Open Sport & Health en controleer Runnix, Garmin, Strava en Health.
-4. Open daarna de bestaande geïnstalleerde PWA online zodat de nieuwe service worker activeert.
+1. Open uitsluitend de canonical URL.
+2. Controleer header `V0.4.0.2`.
+3. Controleer in Sport & Health de Runnix-status `LOCAL-ONLY`.
+4. Test drag en tap met mouse.
+5. Open de geïnstalleerde PWA online voor de update.
+6. Test drag en tap met touch.
 
-Opnieuw installeren is normaal niet nodig. De vorige V0.3.0.1-site blijft actief totdat deze workflow succesvol deployt.
+Opnieuw installeren is normaal niet nodig. De PWA gebruikt een nieuwe cachekey en release-versioned assets.
