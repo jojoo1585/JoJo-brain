@@ -1,4 +1,4 @@
-# Neural Engine — V0.3.0.1
+# Neural Engine — V0.4.0
 
 ## Verantwoordelijkheid
 
@@ -47,7 +47,7 @@ Slepen zet de node tijdelijk vast. Omdat de springberekening blijft lopen, reage
 - geen externe physicsdependency;
 - geen integratiedata of accountstatus.
 
-## V0.3.0.1 compatibility boundary
+## V0.4.0 compatibility boundary
 
 De physicsformules zijn niet gewijzigd. De hotfix maakt alleen de runtime-initialisatie tolerant:
 

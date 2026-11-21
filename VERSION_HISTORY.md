@@ -1,31 +1,29 @@
-# V0.3.0.1 — Samsung/PWA Bootstrap Hotfix
+# Version history — JoJo Brain
 
-**Datum:** 20 november 2026  
-**Status:** hotfix build, getest voor bestaande-PWA-upgrade.
+## V0.4.0 — Sport & Health Constellation
 
-Herstelt graphinitialisatie op Samsung installed PWA's door de verplichte `ResizeObserver`-dependency te verwijderen, de werkelijke visual viewport te gebruiken en gemengde service-workercaches te voorkomen met release-versioned assets. De V0.3 graph en physics blijven functioneel ongewijzigd.
+- Eerste volwassen inhoudelijke JoJo-blok.
+- Runnix, Garmin, Strava en Health met duidelijk onderscheiden rollen.
+- Runnix: Vandaag, Planning, Execution en Progressie.
+- Garmin zonder overlap met Runnix Vandaag.
+- Strava zonder prominente Segments-node.
+- Health-aggregator voor Sleep, HRV, Resting HR, Weight en Recovery.
+- Semantische datalijnen en vernieuwde energy-core styling.
 
----
+## V0.3.0.1 — PWA bootstrap hotfix
 
-## Eerdere versies
+- Samsung/WebView visual-viewportfix.
+- Atomic release-versioned service-workerupdate.
+- Bestaande installatie werkt bij zonder reinstall.
 
 ## V0.3.0 — Living Neural Universe
 
-**Datum:** 20 november 2026  
-**Status:** build gereed voor publicatie en praktijktest.
+- Spatial graph, springfysica, sleepbare nodes en canvasparticles.
 
-Full-screen spatial graph met JoJo als blijvend anker, lichte springfysica, sleepbare nodes, canvasparticles, neurale signalen en clusterfocus. Sport & Health is de eerste volledig uitgewerkte cluster. PWA en offlinefundament zijn behouden. Projectdocumentatie is uitgebreid tot een systematisch versiespoor.
+## V0.2.0 — Personal Control Center
 
-## V0.2.0 — Mobile/PWA Foundation
+- Eerste mobile-first PWA-cockpit.
 
-**Datum:** 20 november 2026  
-**Status:** basistests goedgekeurd.
+## V0.1.0 — Baseline
 
-JoJo werd de centrale root; Sport & Health, Home en Development kregen drill-downnavigatie. PWA-manifest, iconen, installatie, offline app-shell, mobiele dock en Pages-workflow werden toegevoegd.
-
-## V0.1.0 — Initial Brainmap
-
-**Datum:** 20 november 2026  
-**Status:** historische baseline.
-
-Eerste statische desktopbrainmap met navigatienodes en dynamisch detailpaneel. De kaart was toen nog primair rond de trainingshub georganiseerd.
+- Eerste JoJo Brain-repository en Pages-workflow.

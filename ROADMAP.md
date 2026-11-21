@@ -1,37 +1,40 @@
 # Roadmap — JoJo Brain
 
-## Actuele baseline: V0.3.0.1
+## Actuele baseline: V0.4.0
 
-Living Neural Universe met springfysica, sleepbare nodes, neurale canvasachtergrond, clusterfocus en volledig uitgewerkte Sport & Health-cluster.
+Sport & Health is het eerste volwassen JoJo-blok:
 
-## V0.3.x — Stabilisatie
+- Runnix als trainingsengine;
+- Garmin als health- en devicebron zonder Runnix-overlap;
+- Strava voor Activities, Trends en Volume zonder Segments-focus;
+- Health als uitbreidbare aggregator;
+- semantische datalijnen en een sterkere mobile-first space/neural experience.
+
+## Acceptatie V0.4.0
 
 - praktijktest op de doeltelefoon;
-- fijnregelen van nodeafstand en drawerhoogte op basis van screenshots;
-- browsercontrole op Android Chrome en iOS Safari;
-- alleen kleine UX- en performancecorrecties, geen architectuuruitbreiding zonder noodzaak.
+- controle van nodeafstand in portrait en landscape;
+- validatie van sleep/tapgedrag;
+- PWA-update testen zonder reinstall;
+- alleen visuele of functionele fixes binnen Sport & Health.
 
-## V0.4 — Personalisation foundation
+## V0.5 — Security + eerste live koppeling
 
-Mogelijke richting, nog niet goedgekeurd:
+- private/self-hosted JoJo;
+- authenticatie en eigen backend;
+- secrets veilig buiten de frontend;
+- GitHub-repository private;
+- eerste read-only Runnix-koppeling;
+- geen Garmin/Strava/Health-integratie vóór de securitygrens staat.
 
-- lokale voorkeuren voor motion/intensiteit;
-- optionele lokale opslag van laatst geopende cluster;
-- themavarianten zonder persoonsgegevens;
-- configureerbare quick routes.
+## V0.6 — My Day
 
-## Later
+- aparte hoofdtak, niet onder Health;
+- privé- en werkagenda in één chronologische tijdlijn;
+- duidelijke bronkleur en privacyfiltering;
+- Google Calendar en werkagenda via veilige connectors;
+- later optioneel trainingsplanning uit Runnix als derde laag.
 
-- veilige statusindicators via een afzonderlijke, geauthenticeerde laag;
-- bewust gekozen integraties met duidelijke privacygrens;
-- richer Home-cluster nadat concrete gebruiksscenario's bestaan;
-- nooit secrets of private netwerkadressen in de publieke repository.
+## Blijvende regel
 
-## V0.3.0.1 — Hotfix completed
-
-- Samsung/WebView bootstrapcompatibiliteit;
-- geïnstalleerde-PWA-upgrade zonder reinstall;
-- visual viewport en orientation changes;
-- mixed-cache upgrade regression test.
-
-De volgende stap blijft een echte hardwarecontrole; nieuwe features wachten tot deze hotfix visueel is bevestigd.
+Geen secrets, tokens, persoonsgegevens of private netwerkadressen in de publieke statische build.

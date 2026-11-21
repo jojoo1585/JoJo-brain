@@ -1,33 +1,31 @@
-# JoJo Brain V0.3.0.1 — Living Neural Universe Hotfix
+# JoJo Brain V0.4.0 — Sport & Health Constellation
 
-JoJo Brain is een mobile-first persoonlijke navigatie-PWA. V0.3.0 veranderde de vaste V0.2-kaart een levend ruimtelijk universum waarin JoJo het centrale anker blijft en domeinen als fysiek verbonden clusters reageren.
+JoJo Brain is een mobile-first persoonlijke navigatie-PWA. V0.4.0 werkt het eerste inhoudelijke blok uit: **Sport & Health**.
 
-## Hoofdstructuur
+## Sport & Health
 
-- **JoJo** — centrale root en persoonlijk control center.
-- **Sport & Health** — eerste volledig uitgewerkte cluster met Runnix, Garmin, Strava en Health.
-- **Home** — secundaire hoofdtak voor lokale infrastructuur en monitoring.
-- **Development** — secundaire hoofdtak voor broncode, releases en JoJo-projectdocumentatie.
+- **Runnix** — trainingsengine met Vandaag, Planning, Execution en Progressie.
+- **Garmin** — bron voor healthsignalen en devices; geen duplicatie van Runnix Vandaag.
+- **Strava** — Activities, Trends en Volume; Segments staat niet prominent.
+- **Health** — uitbreidbare aggregator voor Sleep, HRV, Resting HR, Weight en Recovery.
 
-## V0.3.0 in het kort
+De bewegende datalijnen leggen de rollen uit:
 
-- full-screen spatial graph;
-- lichte springfysica zonder externe library;
-- sleepbare nodes, waarbij verbonden nodes fysiek reageren;
-- subtiele zweefbeweging en bewegende signaalpulsen;
-- canvas-gebaseerde sterren- en neurale achtergrond;
-- focus/zoomovergang wanneer een cluster opent;
-- toegankelijke DOM-buttons bovenop de canvaslaag;
-- begrensde pixel ratio en lager particle-budget op telefoons;
-- `prefers-reduced-motion`-ondersteuning;
-- behouden PWA-installatie, appiconen, offline cache en GitHub Pages-workflow.
+```text
+Garmin ──health signals──> Health ──recovery context──> Runnix
+Strava ──activity check───────────────────────────────> Runnix
+```
+
+## Privacygrens
+
+V0.4.0 toont een architectuur en navigatie, geen persoonlijke data. Er worden geen Garmin-, Strava-, Runnix- of healthwaarden opgehaald. TCX blijft in Runnix op de NAS. Voeg nooit tokens, wachtwoorden, private netwerkadressen of persoonsgegevens toe aan de publieke repository.
 
 ## Gebruiken
 
-- **Tik/klik** op een node om de cluster te focussen of het detail te openen.
-- **Sleep** een node. De veren trekken verbonden nodes mee en brengen het geheel geleidelijk terug naar de clusterlayout.
-- Gebruik **Terug**, de breadcrumbs of de JoJo-knop om naar een hoger niveau te gaan.
-- Op mobiel opent detailinformatie als een bottom sheet.
+- Tik/klik op een node om te focussen of details te openen.
+- Sleep nodes om de springfysica te voelen.
+- Gebruik Terug, breadcrumbs of JoJo om omhoog te navigeren.
+- Op mobiel opent detailinformatie als bottom sheet.
 
 ## Lokaal uitvoeren
 
@@ -43,24 +41,9 @@ Open `http://localhost:8080`.
 npm test
 ```
 
-Zie `TESTING.md` voor de volledige verificatiematrix.
+Zie `TESTING.md` en `TEST_REPORT-V0.4.0.md`.
 
-## Links configureren
+## Volgende blokken
 
-Alle configureerbare URL's staan in `config.js`. Publieke links mogen worden ingevuld. Lokale of private adressen blijven leeg in de publieke repository. Voeg nooit tokens, wachtwoorden, cookies of persoonsgegevens toe.
-
-## Documentatie
-
-- `ARCHITECTURE.md` — actuele componenten, datastroom en grenzen;
-- `ENGINE.md` — fysica- en renderengine;
-- `ROADMAP.md` — volgende ontwikkelstappen;
-- `TESTING.md` — geautomatiseerde en manuele checks;
-- `TEST_REPORT-V0.3.0.md` — uitgevoerd testresultaat voor deze build;
-- `VERSION_HISTORY.md` — versie-overzicht;
-- `CONVERSATION_LOG.md` — beslissingen per build;
-- `CHANGELOG.md` en `CHANGELOG-V0.3.0.md` — concrete wijzigingen.
-
-
-## V0.3.0.1 hotfix
-
-Herstelt Samsung installed-PWA-initialisatie, gebruikt de werkelijke visual viewport en voorkomt gemengde oude/nieuwe cached assets. Een bestaande installatie werkt zichzelf bij; opnieuw installeren is niet vereist. Zie `CHANGELOG-V0.3.0.1.md`.
+- **V0.5:** private/self-hosted securitylaag en een eerste read-only Runnix-koppeling.
+- **V0.6:** My Day met privé- en werkagenda in één tijdlijn.

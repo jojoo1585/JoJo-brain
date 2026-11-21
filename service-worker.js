@@ -1,4 +1,4 @@
-const RELEASE = '0.3.0.1';
+const RELEASE = '0.4.0';
 const CACHE_NAME = `jojo-brain-v${RELEASE}`;
 const V = `?v=${RELEASE}`;
 const APP_SHELL = [

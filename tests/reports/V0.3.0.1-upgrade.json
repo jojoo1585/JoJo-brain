@@ -3,10 +3,10 @@
     "jojo-brain-v0.3.0"
   ],
   "newCaches": [
-    "jojo-brain-v0.3.0.1"
+    "jojo-brain-v0.4.0"
   ],
   "versionedRequests": 14,
-  "version": "V0.3.0.1",
+  "version": "V0.4.0",
   "nodes": 4,
   "bootHidden": true,
   "errors": []

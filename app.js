@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const RELEASE = '0.3.0.1';
+  const RELEASE = '0.4.0';
   const root = document.documentElement;
   const $ = (selector) => document.querySelector(selector);
   const esc = (value) => String(value == null ? '' : value).replace(/[&<>'"]/g, (char) => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[char]));
@@ -62,7 +62,7 @@
     $('#detail-actions').innerHTML = actions.join('');
     $('#privacy-note').textContent = node.privacy || (node.linkKey && !url ? 'Deze private of lokale link blijft bewust leeg in de publieke configuratie.' : 'JoJo bewaart hier geen accountgegevens of externe data.');
     const drawer = $('#info-drawer');
-    ['accent-cyan','accent-magenta','accent-green','accent-violet','accent-orange'].forEach((name) => drawer.classList.remove(name));
+    ['accent-cyan','accent-magenta','accent-green','accent-violet','accent-orange','accent-blue'].forEach((name) => drawer.classList.remove(name));
     drawer.classList.add(`accent-${node.accent}`);
     if (open) { drawer.classList.remove('is-collapsed'); drawer.classList.add('is-open'); }
   }

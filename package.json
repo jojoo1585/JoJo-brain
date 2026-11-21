@@ -1,11 +1,13 @@
 {
   "name": "jojo-brain",
-  "version": "0.3.0.1",
+  "version": "0.4.0",
   "private": true,
-  "description": "JoJo Brain Living Neural Universe — static mobile-first PWA",
+  "description": "JoJo Brain V0.4.0 — mobile-first Sport & Health constellation",
   "scripts": {
     "test": "node tests/validate.mjs",
     "serve": "python3 -m http.server 8080"
   },
-  "engines": {"node": ">=20"}
+  "engines": {
+    "node": ">=20"
+  }
 }

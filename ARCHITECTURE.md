@@ -1,154 +1,98 @@
-# Architecture — JoJo Brain V0.3.0.1
+# Architecture — JoJo Brain V0.4.0
 
-**Status:** actuele hotfix-architectuurbaseline  
-**Laatst bijgewerkt:** 20 november 2026  
-**Architectuurwijziging:** vaste radiale DOM-layout vervangen door een hybride spatial graph.
+**Status:** Sport & Health-baseline  
+**Laatst bijgewerkt:** 21 november 2026
 
-## 1. Doel
+## 1. Doel en grens
 
-JoJo Brain is een publieke, statische PWA en persoonlijke navigatielaag. De app visualiseert relaties tussen domeinen, maar bewaart geen accountdata en voert geen private integraties uit.
+JoJo Brain is in V0.4.0 een publieke, statische navigatie-PWA. De app visualiseert relaties tussen systemen, maar bewaart geen accountdata, trainingsbestanden of persoonlijke healthwaarden en voert geen private integraties uit.
 
 ## 2. Conceptuele hiërarchie
 
 ```text
 JoJo
 ├── Sport & Health
-│   ├── Runnix (integratiereferentie)
+│   ├── Runnix
 │   │   ├── Vandaag
 │   │   ├── Planning
-│   │   ├── Progressie
-│   │   ├── Intelligence
-│   │   └── TCX Import
+│   │   ├── Execution
+│   │   └── Progressie
 │   ├── Garmin
-│   │   ├── Training
-│   │   ├── Health data
+│   │   ├── Health signals
 │   │   └── Devices
 │   ├── Strava
 │   │   ├── Activities
-│   │   ├── Segments
-│   │   └── Community
-│   └── Health
-│       ├── Recovery
-│       ├── Slaap & HRV
-│       └── Body
-├── Home
-│   ├── Synology
-│   ├── Monitoring
-│   └── Services
-└── Development
-    ├── GitHub
-    ├── JoJo repository
-    ├── Releases
-    └── Documentation
+│   │   ├── Trends
+│   │   └── Volume
+│   └── Health (Health-aggregator)
+│       ├── Sleep
+│       ├── HRV
+│       ├── Resting HR
+│       ├── Weight
+│       └── Recovery
+├── Home (ongewijzigd)
+└── Development (ongewijzigd)
 ```
 
-Runnix komt alleen voor als gekoppelde bestemming binnen Sport & Health. De interne Runnix-architectuur hoort niet in deze repository.
+## 3. Semantische datalijnen
 
-## 3. Runtime-lagen
+De boomstructuur bepaalt navigatie. `connections` in `graph-data.js` voegen betekenisvolle, niet-hiërarchische relaties toe:
 
-### 3.1 App-shell — `index.html`
+- Garmin → Health: health signals;
+- Health → Runnix: recovery context;
+- Strava → Runnix: activity check;
+- Vandaag → Execution → Progressie → Planning: Runnix closed loop.
 
-Semantische full-screen shell met header, breadcrumbs, graph viewport, detail drawer, mobiele dock en boot-state.
+Een verbinding wordt alleen getekend wanneer beide eindpunten zichtbaar zijn. De engine kent de betekenis niet; label en kleur komen uit het datamodel.
 
-### 3.2 Inhoudsmodel — `graph-data.js`
+## 4. Runtime-lagen
 
-Enige bron voor node-inhoud en hiërarchie. Elke node definieert:
+### App-shell — `index.html`
 
-- identiteit, parent en children;
-- titel, status, domein en accent;
-- beschrijving, flow en kernpunten;
-- optionele `linkKey` naar `config.js`.
+Full-screen shell met header, breadcrumbs, graph viewport, signaalegenda, detail drawer, mobiele dock en boot-state.
 
-De engine kent geen domeinspecifieke tekst.
+### Inhoudsmodel — `graph-data.js`
 
-### 3.3 Spatial engine — `neural-engine.js`
+Bron voor nodes, parent/children, inhoud, links en optionele semantische `connections`.
 
-Hybride renderlaag:
+### Spatial engine — `neural-engine.js`
 
-- `<canvas>` voor particles, glow, verbindingen en signaalpulsen;
-- DOM-buttons voor nodes, toetsenbordfocus en pointerinteractie;
-- velocity-based springfysica met target-attractie, edge springs, lokale repulsie, damping en grenzen;
-- dynamische zichtbare subgraph: ancestors + focusnode + directe children;
+- canvas voor particles, glow, verbindingen, semantische labels en signaalpulsen;
+- toegankelijke DOM-buttons voor nodes;
+- springfysica, lokale repulsie, damping en grenzen;
+- desktopcontext: zusterhubs blijven gedimd zichtbaar;
+- mobiel: kleinere directe subgraph om overlap te beperken;
 - adaptief particle-budget en device-pixel-ratio.
 
-### 3.4 Orchestratie — `app.js`
+### Orchestratie — `app.js`
 
-Beheert:
+Beheert clusterfocus, geschiedenis, breadcrumbs, detail drawer, online/offline-indicatie, installatie en service-workerupdates.
 
-- clusterfocus, geschiedenis en hash deep links;
-- breadcrumbs en detail drawer;
-- online/offline-indicatie;
-- installprompt en service-workerregistratie;
-- reduced-motionmodus.
-
-### 3.5 Presentatie — `styles.css`
-
-Full-screen compositie, glass overlays, neurale nodes, desktopdrawer en mobiele bottom sheet. Animatie blijft decoratief; de engine werkt ook met reduced motion.
-
-### 3.6 Configuratie — `config.js`
+### Configuratie — `config.js`
 
 Publieke URL-configuratie. Lokale en private adressen blijven leeg. Er is geen token- of credentialmodel.
 
-### 3.7 PWA — `manifest.webmanifest` en `service-worker.js`
+### PWA — manifest en service worker
 
-- standalone installatie;
-- relatieve scope voor GitHub Pages;
-- first-party app-shellcache;
-- network-first navigatie met cached fallback;
-- geen caching van externe pagina's.
+Release-versioned app-shell, network-first navigatie, cached fallback en onmiddellijke upgrade zonder reinstall.
 
-## 4. Fysisch model
+## 5. Rollen in Sport & Health
 
-Per frame worden alleen de zichtbare nodes berekend. De bovengrens is klein: het pad naar de focus plus directe kinderen.
+- Runnix interpreteert en adviseert.
+- Garmin levert brondata en devicecontext.
+- Health aggregeert brononafhankelijke lichamelijke context.
+- Strava geeft een onafhankelijke activiteit- en volumeblik.
+- JoJo orkestreert navigatie en visualiseert relaties; JoJo is geen tweede trainingsengine.
 
-Krachten:
-
-1. **Target attraction** houdt een cluster leesbaar.
-2. **Spring edges** laten verbonden nodes reageren op slepen.
-3. **Local repulsion** beperkt overlap.
-4. **Damping** voorkomt instabiliteit.
-5. **Boundary force** houdt nodes binnen de viewport.
-6. **Micro-float** geeft subtiele levendigheid en vervalt bij reduced motion.
-
-## 5. Performancegrenzen
+## 6. Performance en toegankelijkheid
 
 - geen externe visualisatie- of physicslibrary;
-- maximaal 1.25 device-pixel-ratio op mobiel, 1.6 op desktop;
-- 32 particles op mobiel, 62 op desktop, 18 met reduced motion;
-- O(n²)-repulsie is veilig omdat alleen de kleine zichtbare subgraph wordt berekend;
-- canvascontext gebruikt `desynchronized` waar beschikbaar;
-- DOM-updates gebruiken alleen `translate3d`;
-- blur/backdrop-effecten zijn op mobiele nodes uitgeschakeld.
+- maximaal 1.25 DPR mobiel en 1.6 desktop;
+- 32 particles mobiel, 62 desktop en 18 bij reduced motion;
+- semantische lijnlabels alleen op desktop;
+- `prefers-reduced-motion` blijft ondersteund;
+- nodes blijven echte buttons met toetsenbordbediening.
 
-## 6. Security- en privacygrens
+## 7. Security- en privacygrens
 
-JoJo Brain is geen proxy, database of authenticatielaag. De publieke build bevat geen lokale infrastructuuradressen, persoonsgegevens, trainingsbestanden, tokens of credentials. Veilige externe toegang moet buiten JoJo worden opgelost.
-
-## 7. Uitbreidingsregels
-
-1. Voeg inhoud toe in `graph-data.js`.
-2. Koppel een configureerbare URL uitsluitend via een `linkKey` in `config.js`.
-3. Werk `ARCHITECTURE.md` bij wanneer runtimecomponenten, datastromen of grenzen wijzigen.
-4. Werk voor iedere build changelog, versiehistoriek, testplan en conversation log bij.
-
-## 8. V0.3.0.1 bootstrap- en updatearchitectuur
-
-### Compatibility bootstrap
-
-`index.html` meet vóór het laden van CSS de `visualViewport` en schrijft `--app-height` en `--app-width`. De shell blijft `is-booting` totdat graphdata, engine, eerste render en twee animation frames voltooid zijn. Statische navigation/drawer-elementen zijn tijdens die fase verborgen.
-
-`NeuralUniverse` gebruikt `ResizeObserver` wanneer beschikbaar. Anders worden `window.resize`, `orientationchange` en `visualViewport.resize` gebruikt. De animation loop bewaart directe DOM-referenties en is daardoor niet meer afhankelijk van `CSS.escape`.
-
-### Atomic installed-PWA update
-
-Alle kritieke assets hebben een `?v=0.3.0.1` URL. Daardoor kan een oudere service worker geen gelijknamige V0.2/V0.3-cachehit teruggeven aan de nieuwe HTML-shell.
-
-De V0.3.0.1 service worker:
-
-1. installeert een volledige release-versioned app-shell;
-2. activeert onmiddellijk;
-3. verwijdert alleen oudere `jojo-brain-*` caches;
-4. claimt bestaande PWA-clients;
-5. laat de app maximaal eenmaal herladen na `controllerchange`.
-
-Hierdoor is geen verwijdering of herinstallatie van de bestaande PWA nodig.
+De publieke build bevat geen lokale infrastructuuradressen, persoonsgegevens, trainingsbestanden, OAuth-secrets of API-tokens. Live data en authenticatie horen in V0.5 bij een aparte veilige backend/self-hosted laag.

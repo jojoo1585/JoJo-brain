@@ -3,7 +3,7 @@
 
   const COLORS = {
     cyan: [53, 234, 210], magenta: [255, 47, 157], green: [101, 230, 155],
-    violet: [154, 121, 255], orange: [255, 156, 90]
+    violet: [154, 121, 255], orange: [255, 156, 90], blue: [76, 151, 255]
   };
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
   const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[c]));
@@ -85,7 +85,14 @@
 
     visibleFor(id) {
       const current = this.data[id] || this.data.jojo;
-      const ids = [...this.pathFor(current.id), ...(current.children || [])];
+      let ids = [...this.pathFor(current.id), ...(current.children || [])];
+      /* The mobile dock already provides a persistent JoJo route; hide that remote ancestor in deep views. */
+      if (this.mobile && current.id !== 'sport-health' && current.parent) ids = ids.filter((nodeId) => nodeId !== 'jojo');
+      /* Keep the other Sport & Health hubs visible as dimmed context while one hub is open. */
+      if (!this.mobile && current.parent === 'sport-health') {
+        const siblings = this.data['sport-health']?.children || [];
+        ids.push(...siblings);
+      }
       return [...new Set(ids)];
     }
 
@@ -101,22 +108,31 @@
 
       const ancestors = this.pathFor(focusId).slice(0, -1).reverse();
       ancestors.forEach((id, index) => {
-        const step = shortViewport ? Math.min(w * .25, 210) : (compact ? Math.min(w * .43, 168) : Math.min(Math.max(w * .18, 190), 220));
-        const angle = -2.35;
+        const step = shortViewport ? Math.min(w * .25, 210) : (compact ? Math.min(w * .27, 108) : Math.min(Math.max(w * .18, 190), 220));
+        const angle = compact ? -1.86 : -2.35;
         const distance = step * (index + 1);
         targets.set(id, {
           x: cx + Math.cos(angle) * distance,
-          y: cy + Math.sin(angle) * distance * (shortViewport ? 1 : .75)
+          y: cy + Math.sin(angle) * distance * (shortViewport || compact ? 1 : .75)
         });
       });
 
       const children = focus.children || [];
-      const radiusX = compact ? Math.min(w * .34, 132) : Math.min(w * .27, 315);
+      const radiusX = compact ? (children.length >= 5 ? Math.min(w * .37, 146) : Math.min(w * .41, 162)) : Math.min(w * .27, 315);
       const radiusY = shortViewport ? Math.min(h * .24, 115) : (compact ? Math.min(h * .245, 205) : Math.min(h * .3, 250));
-      const start = children.length === 1 ? 0 : (-Math.PI / 2);
+      const start = children.length === 1 ? 0 : (compact && children.length === 4 ? -Math.PI / 4 : -Math.PI / 2);
       children.forEach((id, index) => {
         const angle = children.length === 1 ? 0 : start + index * (Math.PI * 2 / children.length);
         targets.set(id, { x: cx + Math.cos(angle) * radiusX, y: cy + Math.sin(angle) * radiusY });
+      });
+
+      const context = ids.filter((id) => !targets.has(id));
+      context.forEach((id, index) => {
+        const count = context.length;
+        const angle = -.35 + index * (Math.PI * 1.2 / Math.max(1, count - 1));
+        const outerX = compact ? Math.min(w * .43, 168) : Math.min(w * .39, 430);
+        const outerY = compact ? Math.min(h * .34, 230) : Math.min(h * .38, 315);
+        targets.set(id, { x: cx + Math.cos(angle) * outerX, y: cy + Math.sin(angle) * outerY });
       });
 
       ids.forEach((id, index) => {
@@ -146,14 +162,24 @@
           vx: old?.vx ?? 0, vy: old?.vy ?? 0,
           phase: old?.phase ?? index * 1.73,
           fixed: old?.fixed ?? false,
-          role: nodeId === focusId ? 'focus' : (this.pathFor(focusId).includes(nodeId) ? 'ancestor' : 'child')
+          role: nodeId === focusId ? 'focus' : (
+            this.pathFor(focusId).includes(nodeId) ? 'ancestor' :
+            data.parent === focusId ? 'child' : 'context'
+          )
         });
       });
       this.nodes = next;
       this.edges = [];
       visibleIds.forEach((nodeId) => {
         const parent = this.data[nodeId].parent;
-        if (parent && next.has(parent)) this.edges.push({ a: parent, b: nodeId, phase: Math.random() * 6.28 });
+        if (parent && next.has(parent)) this.edges.push({ a: parent, b: nodeId, phase: Math.random() * 6.28, semantic: false });
+      });
+      (this.data[focusId].connections || []).forEach((connection) => {
+        if (!next.has(connection.from) || !next.has(connection.to)) return;
+        this.edges.push({
+          a: connection.from, b: connection.to, phase: Math.random() * 6.28,
+          semantic: true, accent: connection.accent, label: connection.label || ''
+        });
       });
       this.renderNodes();
       if (!options.resize && previousFocus !== focusId) {
@@ -296,20 +322,34 @@
 
       this.edges.forEach((edge, index) => {
         const a = this.nodes.get(edge.a), b = this.nodes.get(edge.b); if (!a || !b) return;
-        const c = COLORS[b.data.accent] || COLORS.cyan;
+        const c = COLORS[edge.accent || b.data.accent] || COLORS.cyan;
         const gradient = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-        gradient.addColorStop(0, `rgba(${c.join(',')},.08)`); gradient.addColorStop(.55, `rgba(${c.join(',')},.42)`); gradient.addColorStop(1, `rgba(${c.join(',')},.16)`);
+        gradient.addColorStop(0, `rgba(${c.join(',')},${edge.semantic ? '.18' : '.08'})`);
+        gradient.addColorStop(.55, `rgba(${c.join(',')},${edge.semantic ? '.68' : '.42'})`);
+        gradient.addColorStop(1, `rgba(${c.join(',')},${edge.semantic ? '.24' : '.16'})`);
         ctx.beginPath(); ctx.moveTo(a.x, a.y);
         const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
         const bend = Math.sin(index * 2.1 + .5) * 18;
         ctx.quadraticCurveTo(mx - (b.y-a.y)/180*bend, my + (b.x-a.x)/180*bend, b.x, b.y);
-        ctx.strokeStyle = gradient; ctx.lineWidth = edge.a === 'jojo' ? 1.25 : .85; ctx.stroke();
+        ctx.strokeStyle = gradient; ctx.lineWidth = edge.semantic ? 1.5 : (edge.a === 'jojo' ? 1.25 : .85);
+        ctx.setLineDash(edge.semantic ? [5, 7] : []); ctx.stroke(); ctx.setLineDash([]);
         if (!this.reduced) {
-          const t = (this.elapsed * .00012 + edge.phase) % 1;
+          const t = (this.elapsed * (edge.semantic ? .00018 : .00012) + edge.phase) % 1;
           const x = (1-t)*(1-t)*a.x + 2*(1-t)*t*mx + t*t*b.x;
           const y = (1-t)*(1-t)*a.y + 2*(1-t)*t*my + t*t*b.y;
-          ctx.beginPath(); ctx.arc(x, y, this.mobile ? 1.45 : 1.8, 0, Math.PI*2);
+          ctx.beginPath(); ctx.arc(x, y, this.mobile ? (edge.semantic ? 2 : 1.45) : (edge.semantic ? 2.4 : 1.8), 0, Math.PI*2);
           ctx.fillStyle = `rgba(${c.join(',')},.9)`; ctx.shadowColor = `rgb(${c.join(',')})`; ctx.shadowBlur = 8; ctx.fill(); ctx.shadowBlur = 0;
+        }
+        if (edge.semantic && edge.label && !this.mobile) {
+          ctx.save();
+          ctx.font = '700 8px ui-monospace, SFMono-Regular, Menlo, monospace';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          const labelWidth = ctx.measureText(edge.label).width + 14;
+          ctx.fillStyle = 'rgba(5,7,13,.82)';
+          ctx.fillRect(mx - labelWidth / 2, my - 8, labelWidth, 16);
+          ctx.fillStyle = `rgba(${c.join(',')},.88)`;
+          ctx.fillText(edge.label, mx, my + .5);
+          ctx.restore();
         }
       });
     }

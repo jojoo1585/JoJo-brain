@@ -39,10 +39,10 @@
       }, 3500);
     })();
   </script>
-  <link rel="manifest" href="manifest.webmanifest?v=0.3.0.1">
-  <link rel="icon" href="assets/icons/favicon.svg?v=0.3.0.1" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=0.3.0.1">
-  <link rel="stylesheet" href="styles.css?v=0.3.0.1">
+  <link rel="manifest" href="manifest.webmanifest?v=0.4.0">
+  <link rel="icon" href="assets/icons/favicon.svg?v=0.4.0" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png?v=0.4.0">
+  <link rel="stylesheet" href="styles.css?v=0.4.0">
   <title>JoJo · Living Neural Universe</title>
 </head>
 <body>
@@ -65,12 +65,18 @@
         <span class="fps-mode" id="motion-mode">LIVE</span>
         <span class="connection" id="connection-status" role="status"><i></i><span>ONLINE</span></span>
         <button class="install-button" id="install-button" type="button" hidden>↓ Installeer</button>
-        <span class="version">V0.3.0.1</span>
+        <span class="version">V0.4.0</span>
       </div>
     </header>
 
     <section class="graph-viewport" id="graph-viewport" aria-label="Interactieve neurale kaart">
       <div class="cluster-title" id="cluster-title" aria-live="polite"><small>JOJO UNIVERSE</small><strong>Alles verbonden.</strong></div>
+      <div class="signal-legend" aria-label="Betekenis van de Sport & Health datalijnen">
+        <span class="legend-blue"><i></i>Source</span>
+        <span class="legend-green"><i></i>Context</span>
+        <span class="legend-magenta"><i></i>Intelligence</span>
+        <span class="legend-orange"><i></i>Cross-check</span>
+      </div>
       <div class="node-layer" id="node-layer"></div>
       <div class="gesture-help" id="gesture-help"><span>↔</span> Sleep nodes · tik om te focussen</div>
       <div class="depth-indicator" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -102,9 +108,9 @@
     </div>
   </main>
   <noscript><p class="noscript">JoJo heeft JavaScript nodig voor de interactieve neurale kaart.</p></noscript>
-  <script defer src="config.js?v=0.3.0.1"></script>
-  <script defer src="graph-data.js?v=0.3.0.1"></script>
-  <script defer src="neural-engine.js?v=0.3.0.1"></script>
-  <script defer src="app.js?v=0.3.0.1"></script>
+  <script defer src="config.js?v=0.4.0"></script>
+  <script defer src="graph-data.js?v=0.4.0"></script>
+  <script defer src="neural-engine.js?v=0.4.0"></script>
+  <script defer src="app.js?v=0.4.0"></script>
 </body>
 </html>

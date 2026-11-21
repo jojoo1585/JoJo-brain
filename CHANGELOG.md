@@ -1,6 +1,12 @@
-# V0.3.0.1 — Samsung/PWA Bootstrap Hotfix
+# Changelog — JoJo Brain
 
-Zie `CHANGELOG-V0.3.0.1.md`.
+## V0.4.0
+
+Zie `CHANGELOG-V0.4.0.md` voor de volledige Sport & Health-release.
+
+# V0.4.0 — Samsung/PWA Bootstrap Hotfix
+
+Zie `CHANGELOG-V0.4.0.md`.
 
 Herstelt de neural-enginebootstrap, Samsung standalone viewport en atomische update van een reeds geïnstalleerde PWA. V0.3 design en physics blijven behouden.
 
